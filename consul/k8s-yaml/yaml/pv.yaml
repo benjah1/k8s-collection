@@ -1,0 +1,54 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-consul-a
+  labels:
+    app: consul
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/consul-a
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-consul-b
+  labels:
+    app: consul
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/consul-b
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-consul-c
+  labels:
+    app: consul
+spec:
+  capacity:
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/consul-c
+    type: Directory
