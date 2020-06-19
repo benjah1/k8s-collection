@@ -4,7 +4,8 @@ metadata:
   name: vault
   namespace: vault
 data:
-  extraconfig-from-values.hcl: |-
+  config.hcl: |-
+    disable_mlock = true
     ui = true
     listener "tcp" {
       tls_disable = 1
@@ -12,7 +13,7 @@ data:
       cluster_address = "[::]:8201"
     }
     storage "consul" {
-      path = "vault"
+      path = "vault/"
       address = "consul.consul:8500"
     }
     service_registration "kubernetes" {}

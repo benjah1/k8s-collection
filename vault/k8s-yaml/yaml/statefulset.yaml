@@ -30,8 +30,12 @@ spec:
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       volumes:
-        - name: home
-          emptyDir: {}
+        - name: config
+          configMap:
+            name: vault
+            items:
+              - key: config.hcl
+                path: config.hcl
       containers:
         - name: vault
           image: vault:1.4.2
@@ -70,14 +74,13 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            - name: HOME
-              value: "/home/vault"
           command: 
             - vault
             - server
+            - -config=/home/vault/config/config.hcl
           volumeMounts:
-            - name: home
-              mountPath: /home/vault
+            - name: config
+              mountPath: /home/vault/config
           ports:
             - containerPort: 8200
               name: http
