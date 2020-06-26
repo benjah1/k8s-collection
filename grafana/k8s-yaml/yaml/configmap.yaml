@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana
+  namespace: monitoring
+data:
+  grafana.ini: |
+    [paths]
+      data = /var/lib/grafana/data
+      logs = /var/log/grafana
+      plugins = /var/lib/grafana/plugins
+      provisioning = /etc/grafana/provisioning
+    [analytics]
+      check_for_updates = true
+    [log]
+      mode = console
+  datasources.yaml: |
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: prometheus-headless.prometheus:9090
+      isDefault: true

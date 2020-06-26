@@ -1,0 +1,18 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-grafana
+  labels:
+    app: grafana
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/grafana-a
+    type: Directory
