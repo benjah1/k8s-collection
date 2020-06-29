@@ -39,7 +39,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: prometheus
-    namespace: prometheus
+    namespace: monitoring
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole

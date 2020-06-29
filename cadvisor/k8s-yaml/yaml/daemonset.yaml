@@ -60,5 +60,7 @@ spec:
           containerPort: 8080
           protocol: TCP
         resources:
+      hostNetwork: true
+      hostPID: true
       automountServiceAccountToken: false
       terminationGracePeriodSeconds: 30

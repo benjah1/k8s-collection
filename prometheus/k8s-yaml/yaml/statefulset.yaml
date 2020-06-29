@@ -1,13 +1,13 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  namespace: prometheus
+  namespace: monitoring
   name: prometheus
 spec:
   selector:
     matchLabels:
       app: prometheus
-  serviceName: prometheus-headless
+  serviceName: prometheus
   podManagementPolicy: "Parallel"
   replicas: 3
   template:
@@ -15,7 +15,7 @@ spec:
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/path: /metrics
-        prometheus.io/port: "8080"
+        prometheus.io/port: "9090"
       labels:
         app: prometheus
     spec:
@@ -35,6 +35,15 @@ spec:
         - name: config-volume
           configMap:
             name: prometheus
+      initContainers:
+        - name: init-chown-data
+          image: "busybox:1.31.1"
+          securityContext:
+            runAsUser: 0
+          command: ["chown", "-R", "65534:65534", "/data"]
+          volumeMounts:
+            - name: data
+              mountPath: "/data"
       containers:
         - name: prometheus
           image: "prom/prometheus:v2.19.1"
