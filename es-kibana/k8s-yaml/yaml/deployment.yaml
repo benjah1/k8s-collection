@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-kibana
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-kibana
+  template:
+    metadata:
+      labels:
+        app: es-kibana
+    spec:
+      containers:
+      - image: kibana:7.8.0
+        name: es-kibana
+        ports:
+        - containerPort: 5601
+          name: http
+        env:
+          - name: ELASTICSEARCH_HOSTS
+            value: http://es-master.monitoring:9200
+          - name: SERVER_HOST
+            value: 0.0.0.0
+          - name: NODE_OPTIONS
+            value: "--max-old-space-size=1800"
+        readinessProbe:
+          httpGet:
+            path: /app/kibana
+            port: 5601
+          initialDelaySeconds: 5
+          timeoutSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /app/kibana
+            port: 5601
+          initialDelaySeconds: 30
+          timeoutSeconds: 5

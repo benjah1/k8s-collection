@@ -28,7 +28,7 @@ spec:
                   - key: app
                     operator: In
                     values:
-                      - vault
+                      - prometheus
               topologyKey: kubernetes.io/hostname
       terminationGracePeriodSeconds: 10
       volumes:
