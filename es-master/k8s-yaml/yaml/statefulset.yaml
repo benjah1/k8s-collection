@@ -134,7 +134,7 @@ spec:
           - name: network.host
             value: "0.0.0.0"
           - name: ES_JAVA_OPTS
-            value: "-Xmx1g -Xms256m"
+            value: "-Xmx512m -Xms512m"
           - name: node.master
             value: "true"
           - name: node.data

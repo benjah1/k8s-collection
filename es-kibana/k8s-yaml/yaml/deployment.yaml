@@ -32,9 +32,3 @@ spec:
             port: 5601
           initialDelaySeconds: 5
           timeoutSeconds: 5
-        livenessProbe:
-          httpGet:
-            path: /app/kibana
-            port: 5601
-          initialDelaySeconds: 30
-          timeoutSeconds: 5
