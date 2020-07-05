@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: es-exportor
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: es-exportor
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "9114"
+      labels:
+        app: es-exportor
+    spec:
+      containers:
+      - image: justwatch/elasticsearch_exporter:1.1.0
+        name: es-exportor
+        ports:
+        - containerPort: 9114
+          name: http
+        args:
+          - "--es.all"
+          - "--es.indices"
+          - "--es.uri=http://es-master.monitoring:9200"
+        livenessProbe:
+          exec:
+            command: 
+              - sh
+              - -c
+              - "ps -a | grep elasticsearch_exporter | grep -v grep"
+          initialDelaySeconds: 10
+          timeoutSeconds: 5

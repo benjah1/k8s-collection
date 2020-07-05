@@ -1,0 +1,36 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-logstash-vault-a
+  labels:
+    app: logstash-vault
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/logstash-vault-a
+    type: Directory
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-logstash-vault-b
+  labels:
+    app: logstash-vault
+spec:
+  capacity:
+    storage: 1Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Recycle
+  storageClassName: standard
+  hostPath:
+    path: /opt/kind-data/logstash-vault-b
+    type: Directory

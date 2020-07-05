@@ -1,0 +1,98 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: logstash-vault
+  namespace: monitoring
+  labels:
+    app: logstash-vault
+spec:
+  serviceName: logstash-vault
+  selector:
+    matchLabels:
+      app: logstash-vault
+  replicas: 1
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        volumeMode: Filesystem
+        resources:
+          requests:
+            storage: 1Gi
+        storageClassName: standard
+        selector:
+          matchLabels:
+            app: logstash-vault
+  template:
+    metadata:
+      labels:
+        app: logstash-vault
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                  - logstash-vault
+            topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 120
+      volumes:
+        - name: logstashconfig
+          configMap:
+            name: logstash-vault-config
+        - name: logstashpipeline
+          configMap:
+            name: logstash-vault-pipeline
+      initContainers:
+      - name: init-chown-data
+        image: "busybox:1.31.1"
+        securityContext:
+          runAsUser: 0
+        command: ["chown", "-R", "1000:1000", "/usr/share/logstash/data"]
+        volumeMounts:
+          - name: data
+            mountPath: "/usr/share/logstash/data"
+      containers:
+      - name: logstash-vault
+        image: "logstash:7.8.0"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 300
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 1
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+          successThreshold: 3
+        ports:
+        - name: http
+          containerPort: 9600
+        - name: tcp
+          containerPort: 9091
+        env:
+          - name: LS_JAVA_OPTS
+            value: "-Xmx128m -Xms128m"
+        volumeMounts:
+          - name: data
+            mountPath: /usr/share/logstash/data
+          - name: logstashconfig
+            mountPath: /usr/share/logstash/config/logstash.yml
+            subPath: logstash.yml
+          - name: logstashpipeline
+            mountPath: /usr/share/logstash/pipeline/logstash.conf
+            subPath: logstash.conf

@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-vault-config
+  namespace: monitoring
+  labels:
+    app: logstash-vault
+data:
+  logstash.yml: |
+    http.host: 0.0.0.0
