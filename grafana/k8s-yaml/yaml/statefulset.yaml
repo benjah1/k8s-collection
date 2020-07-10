@@ -35,6 +35,15 @@ spec:
             - name: config
               mountPath: "/etc/grafana/provisioning/datasources/datasources.yaml"
               subPath: datasources.yaml
+            - name: config
+              mountPath: "/etc/grafana/provisioning/dashboards/dashboards.yaml"
+              subPath: dashboards.yaml
+            - name: config-dashboard-container
+              mountPath: "/var/lib/grafana/dashboards/default/container.json"
+              subPath: container.json
+            - name: config-dashboard-node
+              mountPath: "/var/lib/grafana/dashboards/default/node.json"
+              subPath: node.json
           ports:
             - name: grafana
               containerPort: 3000
@@ -59,6 +68,12 @@ spec:
         - name: config
           configMap:
             name: grafana
+        - name: config-dashboard-container
+          configMap:
+            name: grafana-dashboard-container
+        - name: config-dashboard-node
+          configMap:
+            name: grafana-dashboard-node
   volumeClaimTemplates:
     - metadata:
         name: data

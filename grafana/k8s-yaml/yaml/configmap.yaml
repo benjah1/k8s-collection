@@ -21,3 +21,18 @@ data:
       type: prometheus
       url: prometheus.monitoring:9090
       isDefault: true
+  dashboards.yaml: |
+    apiVersion: 1
+    providers:
+    - name: 'default-dashboards'
+      orgId: 1
+      folder: 'default'
+      folderUid: ''
+      type: file
+      disableDeletion: false
+      editable: true
+      updateIntervalSeconds: 10
+      allowUiUpdates: false
+      options:
+        path: /var/lib/grafana/dashboards
+        foldersFromFilesStructure: true
