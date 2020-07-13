@@ -86,7 +86,7 @@ spec:
           containerPort: 9091
         env:
           - name: LS_JAVA_OPTS
-            value: "-Xmx128m -Xms128m"
+            value: "-Xms512m -Xms512m"
         volumeMounts:
           - name: data
             mountPath: /usr/share/logstash/data
