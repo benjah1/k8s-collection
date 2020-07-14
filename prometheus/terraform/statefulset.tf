@@ -1,4 +1,4 @@
-resource "kubernetes_stateful_set" "prometheus-sts" {
+resource "kubernetes_stateful_set" "prometheus" {
   metadata {
 
     labels = {
@@ -158,7 +158,6 @@ resource "kubernetes_stateful_set" "prometheus-sts" {
             storage = "16Gi"
           }
         }
-        storage_class_name = "standard"
         selector {
           match_labels {
             app = "prometheus"
