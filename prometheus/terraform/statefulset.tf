@@ -37,6 +37,7 @@ resource "kubernetes_stateful_set" "prometheus" {
 
       spec {
         service_account_name = "prometheus"
+				automount_service_account_token = true
 
 				affinity {
 					pod_anti_affinity {
@@ -47,8 +48,8 @@ resource "kubernetes_stateful_set" "prometheus" {
 									operator = "In"
 									values = ["prometheus"]
 								}
-								topology_key = "kubernetes.io/hostname"
 							}
+							topology_key = "kubernetes.io/hostname"
 						}
 					}
 				}
@@ -58,9 +59,14 @@ resource "kubernetes_stateful_set" "prometheus" {
           image             = "busybox:1.31.1"
           command           = ["chown", "-R", "65534:65534", "/data"]
 
+          security_context {
+            run_as_user = 0
+					}
+
           volume_mount {
-            name       = "data"
-            mount_path = "/data"
+            name       				= "data"
+            mount_propagation = "None"
+            mount_path 				= "/data"
           }
         }
 
@@ -96,11 +102,13 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name       = "config-volume"
             mount_path = "/etc/config"
+            mount_propagation 	= "None"
           }
 
           volume_mount {
             name       = "data"
             mount_path = "/data"
+            mount_propagation 	= "None"
           }
 
           readiness_probe {
@@ -140,7 +148,7 @@ resource "kubernetes_stateful_set" "prometheus" {
       type = "RollingUpdate"
 
       rolling_update {
-        partition = 1
+        partition = 0
       }
     }
 
@@ -152,14 +160,13 @@ resource "kubernetes_stateful_set" "prometheus" {
       spec {
         access_modes       	= ["ReadWriteOnce"]
         storage_class_name 	= "standard"
-        volumeMode 					= "Filesystem"
         resources {
           requests = {
-            storage = "16Gi"
+            storage = "5Gi"
           }
         }
         selector {
-          match_labels {
+          match_labels = {
             app = "prometheus"
 					}
 				}

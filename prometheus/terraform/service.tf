@@ -5,9 +5,9 @@ resource "kubernetes_service" "prometheus" {
   }
   spec {
     selector = {
-      app = "${kubernetes_stateful_set.prometheus.spec.template.metadata.0.labels.app}"
+      app = "${kubernetes_stateful_set.prometheus.spec.0.template.0.metadata.0.labels.app}"
     }
-    client_ip = "None"
+    cluster_ip = "None"
     port {
 			name = "http"
       port        = 8080
