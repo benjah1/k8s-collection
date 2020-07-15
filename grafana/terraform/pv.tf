@@ -16,9 +16,11 @@ resource "kubernetes_persistent_volume" "pv_grafana" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		host_path {
-			path = "/opt/kind-data/grafana-a"
-			type = "Directory"
+		persistent_volume_source {
+			host_path {
+				path = "/opt/kind-data/grafana-a"
+				type = "Directory"
+			}
 		}
   }
 }
