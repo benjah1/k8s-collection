@@ -51,6 +51,7 @@ resource "kubernetes_daemonset" "node_exporter" {
           port {
             name           = "metrics"
             container_port = 9100
+            host_port = 9100
             protocol       = "TCP"
           }
 

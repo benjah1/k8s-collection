@@ -164,6 +164,10 @@ resource "kubernetes_stateful_set" "es_master" {
       }
     }
 
+	  update_strategy {
+			type = "RollingUpdate"
+		}
+
     volume_claim_template {
       metadata {
         name = "data"
