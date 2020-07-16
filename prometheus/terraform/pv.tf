@@ -16,12 +16,12 @@ resource "kubernetes_persistent_volume" "pv_prometheus_a" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/prometheus-a"
-				type = "Directory"
-			}
-		}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/prometheus-a"
+        type = "Directory"
+      }
+    }
   }
 }
 
@@ -43,12 +43,12 @@ resource "kubernetes_persistent_volume" "pv_prometheus_b" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/prometheus-b"
-				type = "Directory"
-			}
-		}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/prometheus-b"
+        type = "Directory"
+      }
+    }
   }
 }
 
@@ -70,11 +70,11 @@ resource "kubernetes_persistent_volume" "pv_prometheus_c" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/prometheus-c"
-				type = "Directory"
-			}
-		}
-	}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/prometheus-c"
+        type = "Directory"
+      }
+    }
+  }
 }

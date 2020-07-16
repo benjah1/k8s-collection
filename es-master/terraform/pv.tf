@@ -16,12 +16,12 @@ resource "kubernetes_persistent_volume" "pv_es_master_a" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/es-master-a"
-				type = "Directory"
-			}
-		}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/es-master-a"
+        type = "Directory"
+      }
+    }
   }
 }
 
@@ -43,12 +43,12 @@ resource "kubernetes_persistent_volume" "pv_es_master_b" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/es-master-b"
-				type = "Directory"
-			}
-		}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/es-master-b"
+        type = "Directory"
+      }
+    }
   }
 }
 
@@ -70,11 +70,11 @@ resource "kubernetes_persistent_volume" "pv_es_master_c" {
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
-		persistent_volume_source {
-			host_path {
-				path = "/opt/kind-data/es-master-c"
-				type = "Directory"
-			}
-		}
+    persistent_volume_source {
+      host_path {
+        path = "/opt/kind-data/es-master-c"
+        type = "Directory"
+      }
+    }
   }
 }

@@ -5,7 +5,7 @@ resource "kubernetes_stateful_set" "prometheus" {
       app = "prometheus"
     }
 
-  	namespace = var.namespace
+    namespace = var.namespace
     name = "prometheus"
   }
 
@@ -29,30 +29,30 @@ resource "kubernetes_stateful_set" "prometheus" {
         }
 
         annotations = {
-					"prometheus.io/scrape" = "true"
-					"prometheus.io/path" = "/metrics"
-					"prometheus.io/port" = "9090"
-				}
+          "prometheus.io/scrape" = "true"
+          "prometheus.io/path" = "/metrics"
+          "prometheus.io/port" = "9090"
+        }
       }
 
       spec {
         service_account_name = "prometheus"
-				automount_service_account_token = true
+        automount_service_account_token = true
 
-				affinity {
-					pod_anti_affinity {
-						required_during_scheduling_ignored_during_execution {
-							label_selector {
-								match_expressions {
-									key = "app"
-									operator = "In"
-									values = ["prometheus"]
-								}
-							}
-							topology_key = "kubernetes.io/hostname"
-						}
-					}
-				}
+        affinity {
+          pod_anti_affinity {
+            required_during_scheduling_ignored_during_execution {
+              label_selector {
+                match_expressions {
+                  key = "app"
+                  operator = "In"
+                  values = ["prometheus"]
+                }
+              }
+              topology_key = "kubernetes.io/hostname"
+            }
+          }
+        }
 
         init_container {
           name              = "init-chown-data"
@@ -61,12 +61,12 @@ resource "kubernetes_stateful_set" "prometheus" {
 
           security_context {
             run_as_user = 0
-					}
+          }
 
           volume_mount {
-            name       				= "data"
+            name               = "data"
             mount_propagation = "None"
-            mount_path 				= "/data"
+            mount_path         = "/data"
           }
         }
 
@@ -102,13 +102,13 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name       = "config-volume"
             mount_path = "/etc/config"
-            mount_propagation 	= "None"
+            mount_propagation   = "None"
           }
 
           volume_mount {
             name       = "data"
             mount_path = "/data"
-            mount_propagation 	= "None"
+            mount_propagation   = "None"
           }
 
           readiness_probe {
@@ -158,8 +158,8 @@ resource "kubernetes_stateful_set" "prometheus" {
       }
 
       spec {
-        access_modes       	= ["ReadWriteOnce"]
-        storage_class_name 	= "standard"
+        access_modes         = ["ReadWriteOnce"]
+        storage_class_name   = "standard"
         resources {
           requests = {
             storage = "5Gi"
@@ -168,8 +168,8 @@ resource "kubernetes_stateful_set" "prometheus" {
         selector {
           match_labels = {
             app = "prometheus"
-					}
-				}
+          }
+        }
       }
     }
   }

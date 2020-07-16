@@ -129,12 +129,12 @@ resource "kubernetes_stateful_set" "es_data" {
           pod_anti_affinity {
             required_during_scheduling_ignored_during_execution {
               label_selector {
-								match_expressions {
-									key = "app"
-									operator = "In"
-									values = ["es-data"]
-								}
-							}
+                match_expressions {
+                  key = "app"
+                  operator = "In"
+                  values = ["es-data"]
+                }
+              }
 
               topology_key = "kubernetes.io/hostname"
             }
@@ -143,9 +143,9 @@ resource "kubernetes_stateful_set" "es_data" {
       }
     }
 
-	  update_strategy {
-			type = "RollingUpdate"
-		}
+    update_strategy {
+      type = "RollingUpdate"
+    }
 
     volume_claim_template {
       metadata {

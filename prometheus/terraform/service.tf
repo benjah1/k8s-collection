@@ -1,7 +1,7 @@
 resource "kubernetes_service" "prometheus" {
   metadata {
     name = "prometheus"
-		namespace = var.namespace
+    namespace = var.namespace
   }
   spec {
     selector = {
@@ -9,9 +9,9 @@ resource "kubernetes_service" "prometheus" {
     }
     cluster_ip = "None"
     port {
-			name = "http"
+      name = "http"
       port        = 8080
-			protocol    = "TCP"
+      protocol    = "TCP"
       target_port = 80
     }
   }

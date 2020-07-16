@@ -1,7 +1,7 @@
 resource "kubernetes_namespace" "monitoring" {
-	metadata {
-		name = "monitoring"
-	}
+  metadata {
+    name = "monitoring"
+  }
 }
 
 module "prometheus" {
