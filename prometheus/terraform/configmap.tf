@@ -1,7 +1,7 @@
 resource "kubernetes_config_map" "prometheus" {
   metadata {
     name      = "prometheus"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   data = {

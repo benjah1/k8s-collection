@@ -6,6 +6,8 @@ resource "kubernetes_namespace" "monitoring" {
 
 module "prometheus" {
   source = "../prometheus/terraform"
+  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
+  replicas = 3
 }
 
 module "node-exporter" {

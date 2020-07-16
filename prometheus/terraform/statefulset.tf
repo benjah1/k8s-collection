@@ -11,7 +11,7 @@ resource "kubernetes_stateful_set" "prometheus" {
 
   spec {
     pod_management_policy  = "Parallel"
-    replicas               = 3
+    replicas               = var.replicas
     revision_history_limit = 2
 
     selector {

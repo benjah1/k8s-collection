@@ -29,7 +29,7 @@ resource "kubernetes_cluster_role_binding" "prometheus" {
   subject {
     kind      = "ServiceAccount"
     name      = "prometheus"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   role_ref {
