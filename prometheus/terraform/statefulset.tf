@@ -108,7 +108,8 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name       = "data"
             mount_path = "/data"
-            mount_propagation   = "None"
+            sub_path = "HOSTNAME"
+            //sub_path_expr = "HOSTNAME"
           }
 
           readiness_probe {
@@ -141,6 +142,13 @@ resource "kubernetes_stateful_set" "prometheus" {
             name = "prometheus"
           }
         }
+
+        volume {
+          name = "data"
+          persistent_volume_claim {
+            claim_name = "data-prometheus"
+          }
+        }
       }
     }
 
@@ -149,27 +157,6 @@ resource "kubernetes_stateful_set" "prometheus" {
 
       rolling_update {
         partition = 0
-      }
-    }
-
-    volume_claim_template {
-      metadata {
-        name = "data"
-      }
-
-      spec {
-        access_modes         = ["ReadWriteOnce"]
-        storage_class_name   = "standard"
-        resources {
-          requests = {
-            storage = "5Gi"
-          }
-        }
-        selector {
-          match_labels = {
-            app = "prometheus"
-          }
-        }
       }
     }
   }

@@ -12,7 +12,7 @@ resource "kubernetes_persistent_volume" "pv_prometheus_a" {
       storage = "5Gi"
     }
 
-    access_modes                     = ["ReadWriteOnce"]
+    access_modes                     = ["ReadWriteMany"]
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
@@ -39,7 +39,7 @@ resource "kubernetes_persistent_volume" "pv_prometheus_b" {
       storage = "5Gi"
     }
 
-    access_modes                     = ["ReadWriteOnce"]
+    access_modes                     = ["ReadWriteMany"]
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
@@ -66,7 +66,7 @@ resource "kubernetes_persistent_volume" "pv_prometheus_c" {
       storage = "5Gi"
     }
 
-    access_modes                     = ["ReadWriteOnce"]
+    access_modes                     = ["ReadWriteMany"]
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
