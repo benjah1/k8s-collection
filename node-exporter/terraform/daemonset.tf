@@ -1,7 +1,7 @@
 resource "kubernetes_daemonset" "node_exporter" {
   metadata {
     name      = "node-exporter"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {
@@ -19,9 +19,7 @@ resource "kubernetes_daemonset" "node_exporter" {
 
         annotations = {
           "prometheus.io/path" = "/metrics"
-
           "prometheus.io/port" = "9100"
-
           "prometheus.io/scrape" = "true"
         }
       }
@@ -63,6 +61,18 @@ resource "kubernetes_daemonset" "node_exporter" {
                 api_version = "v1"
                 field_path  = "status.hostIP"
               }
+            }
+          }
+
+          resources {
+            limits {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+
+            requests {
+              cpu    = "100m"
+              memory = "128Mi"
             }
           }
 

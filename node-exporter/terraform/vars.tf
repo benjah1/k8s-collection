@@ -3,7 +3,3 @@ variable "namespace" {
   default = "monitoring"
 }
 
-variable "replicas" {
-  type = number
-  default = 3
-}

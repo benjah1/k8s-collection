@@ -12,13 +12,13 @@ resource "kubernetes_persistent_volume" "pv_grafana" {
       storage = "1Gi"
     }
 
-    access_modes                     = ["ReadWriteOnce"]
+    access_modes                     = ["ReadWriteMany"]
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/grafana-a"
+        path = "/opt/kind-data/grafana"
         type = "Directory"
       }
     }

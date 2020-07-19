@@ -12,10 +12,12 @@ module "prometheus" {
 
 module "node-exporter" {
   source = "../node-exporter/terraform"
+  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
 }
 
 module "grafana" {
   source = "../grafana/terraform"
+  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
 }
 
 
@@ -42,4 +44,3 @@ module "es-filebeat" {
 module "es-exportor" {
   source = "../es-exportor/terraform"
 }
-

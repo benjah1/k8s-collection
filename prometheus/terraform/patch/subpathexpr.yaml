@@ -1,0 +1,13 @@
+spec:
+  template:
+    spec:
+      initContainers:
+        - name: init-chown-data
+          volumeMounts:
+            - mountPath: "/data"
+              subPathExpr: $(POD_NAME)
+      containers:
+        - name: prometheus
+          volumeMounts:
+            - mountPath: "/data"
+              subPathExpr: $(POD_NAME)

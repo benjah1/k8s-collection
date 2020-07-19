@@ -1,11 +1,13 @@
 resource "kubernetes_stateful_set" "grafana" {
   metadata {
     name      = "grafana"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {
     replicas = 1
+
+    service_name = "grafana"
 
     selector {
       match_labels = {
@@ -30,29 +32,31 @@ resource "kubernetes_stateful_set" "grafana" {
         }
 
         volume {
-          name = "config-dashboard-container"
-
-          config_map {
-            name = "grafana-dashboard-container"
+          name = "data"
+          persistent_volume_claim {
+            claim_name = "data-grafana"
           }
         }
-
-        volume {
-          name = "config-dashboard-node"
-
-          config_map {
-            name = "grafana-dashboard-node"
-          }
-        }
-
+ 
         init_container {
           name    = "init-chown-data"
           image   = "busybox:1.31.1"
           command = ["chown", "-R", "472:472", "/var/lib/grafana"]
 
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
+
           volume_mount {
             name       = "data"
             mount_path = "/var/lib/grafana"
+            //sub_path_expr = "$(POD_NAME)"
           }
         }
 
@@ -66,6 +70,18 @@ resource "kubernetes_stateful_set" "grafana" {
             protocol       = "TCP"
           }
 
+          resources {
+            limits {
+              cpu    = "100m"
+              memory = "512Mi"
+            }
+
+            requests {
+              cpu    = "100m"
+              memory = "512Mi"
+            }
+          }
+
           env {
             name  = "GF_SECURITY_ADMIN_USER"
             value = "admin"
@@ -76,6 +92,16 @@ resource "kubernetes_stateful_set" "grafana" {
             value = "12345"
           }
 
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
+ 
           volume_mount {
             name       = "config"
             mount_path = "/etc/grafana/grafana.ini"
@@ -85,6 +111,7 @@ resource "kubernetes_stateful_set" "grafana" {
           volume_mount {
             name       = "data"
             mount_path = "/var/lib/grafana"
+            //sub_path_expr = "$(POD_NAME)"
           }
 
           volume_mount {
@@ -100,13 +127,13 @@ resource "kubernetes_stateful_set" "grafana" {
           }
 
           volume_mount {
-            name       = "config-dashboard-container"
+            name       = "config"
             mount_path = "/var/lib/grafana/dashboards/default/container.json"
             sub_path   = "container.json"
           }
 
           volume_mount {
-            name       = "config-dashboard-node"
+            name       = "config"
             mount_path = "/var/lib/grafana/dashboards/default/node.json"
             sub_path   = "node.json"
           }
@@ -135,32 +162,11 @@ resource "kubernetes_stateful_set" "grafana" {
     update_strategy {
       type = "RollingUpdate"
     }
-
-    volume_claim_template {
-      metadata {
-        name = "data"
-      }
-
-      spec {
-        access_modes = ["ReadWriteOnce"]
-
-        selector {
-          match_labels = {
-            app = "grafana"
-          }
-        }
-
-        resources {
-          requests = {
-            storage = "1Gi"
-          }
-        }
-
-        storage_class_name = "standard"
-      }
-    }
-
-    service_name = "grafana"
   }
+
+  provisioner "local-exec" {
+    command = "kubectl -n ${var.namespace} patch sts grafana --patch \"$(cat ${path.module}/patch/subpathexpr.yaml)\""
+  }
+
 }
 

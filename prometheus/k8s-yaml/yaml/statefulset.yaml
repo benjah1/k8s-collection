@@ -35,15 +35,25 @@ spec:
         - name: config-volume
           configMap:
             name: prometheus
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-prometheus
       initContainers:
         - name: init-chown-data
           image: "busybox:1.31.1"
           securityContext:
             runAsUser: 0
           command: ["chown", "-R", "65534:65534", "/data"]
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
           volumeMounts:
             - name: data
               mountPath: "/data"
+              subPathExpr: ${POD_NAME}
       containers:
         - name: prometheus
           image: "prom/prometheus:v2.19.1"
@@ -69,22 +79,15 @@ spec:
             initialDelaySeconds: 30
             timeoutSeconds: 30
           resources:
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.name
           volumeMounts:
             - name: config-volume
               mountPath: /etc/config
             - name: data
               mountPath: /data
-  volumeClaimTemplates:
-    - metadata:
-        name: data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        volumeMode: Filesystem
-        resources:
-          requests:
-            storage: 5Gi
-        storageClassName: standard
-        selector:
-          matchLabels:
-            app: prometheus
+              subPathExpr: ${POD_NAME}

@@ -63,10 +63,20 @@ resource "kubernetes_stateful_set" "prometheus" {
             run_as_user = 0
           }
 
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
+
           volume_mount {
             name               = "data"
-            mount_propagation = "None"
             mount_path         = "/data"
+            //sub_path_expr = "$(POD_NAME)"
           }
         }
 
@@ -82,6 +92,16 @@ resource "kubernetes_stateful_set" "prometheus" {
             "--web.console.templates=/etc/prometheus/consoles",
             "--web.enable-lifecycle",
           ]
+
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
 
           port {
             container_port = 9090
@@ -108,8 +128,7 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name       = "data"
             mount_path = "/data"
-            sub_path = "HOSTNAME"
-            //sub_path_expr = "HOSTNAME"
+            //sub_path_expr = "$(POD_NAME)"
           }
 
           readiness_probe {
@@ -159,5 +178,9 @@ resource "kubernetes_stateful_set" "prometheus" {
         partition = 0
       }
     }
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl -n ${var.namespace} patch sts prometheus --patch \"$(cat ${path.module}/patch/subpathexpr.yaml)\""
   }
 }
