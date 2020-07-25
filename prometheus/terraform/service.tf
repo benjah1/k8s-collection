@@ -10,9 +10,9 @@ resource "kubernetes_service" "prometheus" {
     cluster_ip = "None"
     port {
       name = "http"
-      port        = 8080
+      port        = 9090
       protocol    = "TCP"
-      target_port = 80
+      target_port = 9090
     }
   }
 }

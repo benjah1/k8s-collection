@@ -56,8 +56,14 @@ resource "kubernetes_stateful_set" "grafana" {
           volume_mount {
             name       = "data"
             mount_path = "/var/lib/grafana"
-            //sub_path_expr = "$(POD_NAME)"
+            sub_path_expr = "$(POD_NAME)"
           }
+        }
+
+        container {
+          name  = "alpine"
+          image = "alpine"
+          command = ["tail", "-f", "/dev/null"]
         }
 
         container {
@@ -111,7 +117,7 @@ resource "kubernetes_stateful_set" "grafana" {
           volume_mount {
             name       = "data"
             mount_path = "/var/lib/grafana"
-            //sub_path_expr = "$(POD_NAME)"
+            sub_path_expr = "$(POD_NAME)"
           }
 
           volume_mount {
@@ -144,7 +150,7 @@ resource "kubernetes_stateful_set" "grafana" {
               port = "3000"
             }
 
-            initial_delay_seconds = 60
+            initial_delay_seconds = 120
             timeout_seconds       = 30
             failure_threshold     = 10
           }
@@ -163,10 +169,5 @@ resource "kubernetes_stateful_set" "grafana" {
       type = "RollingUpdate"
     }
   }
-
-  provisioner "local-exec" {
-    command = "kubectl -n ${var.namespace} patch sts grafana --patch \"$(cat ${path.module}/patch/subpathexpr.yaml)\""
-  }
-
 }
 

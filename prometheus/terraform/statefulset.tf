@@ -76,7 +76,7 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name               = "data"
             mount_path         = "/data"
-            //sub_path_expr = "$(POD_NAME)"
+            sub_path_expr = "$(POD_NAME)"
           }
         }
 
@@ -128,7 +128,7 @@ resource "kubernetes_stateful_set" "prometheus" {
           volume_mount {
             name       = "data"
             mount_path = "/data"
-            //sub_path_expr = "$(POD_NAME)"
+            sub_path_expr = "$(POD_NAME)"
           }
 
           readiness_probe {
@@ -180,7 +180,9 @@ resource "kubernetes_stateful_set" "prometheus" {
     }
   }
 
+/*
   provisioner "local-exec" {
     command = "kubectl -n ${var.namespace} patch sts prometheus --patch \"$(cat ${path.module}/patch/subpathexpr.yaml)\""
   }
+*/
 }
