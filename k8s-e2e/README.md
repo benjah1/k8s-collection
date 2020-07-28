@@ -8,10 +8,14 @@
 
 ## Script
 
+```
+docker run -it --rm --name e2e -v $(pwd):/app -v $($HOME)/.kube:/root/.kube --net host golang:1.14 bash
+```
 
 ```
 curl -Lo bazel.sh https://github.com/bazelbuild/bazel/releases/download/0.23.2/bazel-0.23.2-installer-linux-x86_64.sh
-sudo bash ./bazel.sh
+apt-get update && apt-get install -y unzip patch
+bash ./bazel.sh
 bazel version # must be Build label: 0.23.2
 curl -Lo k8s https://github.com/kubernetes/kubernetes/archive/v1.18.2.tar.gz # depends on your kind cluster version
 mv k8s k8s_1.18.2.tar.gz
