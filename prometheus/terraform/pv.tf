@@ -1,9 +1,10 @@
 resource "kubernetes_persistent_volume" "prometheus" {
   metadata {
-    name = "pv-prometheus"
+    name = "prometheus"
 
     labels = {
       app = "prometheus"
+      pvc = "data-prometheus"
     }
   }
 

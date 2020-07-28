@@ -21,7 +21,7 @@ EOL
 resource "kubernetes_network_policy" "monitoring_ingress_default_deny" {
   metadata {
     name      = "ingress-default-deny"
-    namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
+    namespace = kubernetes_namespace.monitoring.metadata.0.name
   }
 
   spec {
@@ -32,18 +32,18 @@ resource "kubernetes_network_policy" "monitoring_ingress_default_deny" {
 
 module "prometheus" {
   source = "../prometheus/terraform"
-  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
+  namespace = kubernetes_namespace.monitoring.metadata.0.name
   replicas = 3
 }
 
 module "grafana" {
   source = "../grafana/terraform"
-  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
+  namespace = kubernetes_namespace.monitoring.metadata.0.name
 }
 
 module "node-exporter" {
   source = "../node-exporter/terraform"
-  namespace = "${kubernetes_namespace.monitoring.metadata.0.name}"
+  namespace = kubernetes_namespace.monitoring.metadata.0.name
 }
 
 /*

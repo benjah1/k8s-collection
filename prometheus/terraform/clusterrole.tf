@@ -37,5 +37,9 @@ resource "kubernetes_cluster_role_binding" "prometheus" {
     kind      = "ClusterRole"
     name      = "prometheus"
   }
-}
 
+  depends_on = [
+    kubernetes_cluster_role.prometheus,
+    kubernetes_service_account.prometheus,
+  ]
+}

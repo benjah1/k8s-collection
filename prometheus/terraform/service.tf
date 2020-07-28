@@ -5,7 +5,7 @@ resource "kubernetes_service" "prometheus" {
   }
   spec {
     selector = {
-      app = "${kubernetes_stateful_set.prometheus.spec.0.template.0.metadata.0.labels.app}"
+      app = "prometheus"
     }
     cluster_ip = "None"
     port {

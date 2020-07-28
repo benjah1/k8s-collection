@@ -169,5 +169,10 @@ resource "kubernetes_stateful_set" "grafana" {
       type = "RollingUpdate"
     }
   }
-}
 
+  depends_on = [
+    kubernetes_config_map.grafana,
+    kubernetes_service.grafana,
+    kubernetes_persistent_volume.pv_grafana,
+  ]
+}

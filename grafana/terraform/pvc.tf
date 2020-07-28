@@ -18,4 +18,8 @@ resource "kubernetes_persistent_volume_claim" "grafana" {
       }
     }
   }
+
+  depends_on = [
+    kubernetes_persistent_volume.pv_grafana
+  ]
 }

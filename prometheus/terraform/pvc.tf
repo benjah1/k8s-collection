@@ -14,8 +14,12 @@ resource "kubernetes_persistent_volume_claim" "prometheus" {
     }
     selector {
       match_labels = {
-        app = "prometheus"
+        app = kubernetes_persistent_volume.prometheus.metadata.0.labels.app
       }
     }
   }
+
+  depends_on = [
+    kubernetes_persistent_volume.prometheus
+  ]
 }

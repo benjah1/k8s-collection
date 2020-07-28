@@ -26,6 +26,20 @@ resource "kubernetes_network_policy" "prometheus" {
         }
       }
 
+      from {
+        pod_selector {
+          match_labels = {
+            app = "node-exporter"
+          }
+        }  
+
+        namespace_selector {
+          match_labels = {
+            name = var.namespace
+          }
+        }
+      }
+
       ports {
         port = "9090"
         protocol = "TCP"

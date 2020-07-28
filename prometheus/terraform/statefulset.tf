@@ -165,7 +165,7 @@ resource "kubernetes_stateful_set" "prometheus" {
         volume {
           name = "data"
           persistent_volume_claim {
-            claim_name = "data-prometheus"
+            claim_name = kubernetes_persistent_volume.prometheus.metadata.0.labels.pvc
           }
         }
       }
@@ -180,9 +180,11 @@ resource "kubernetes_stateful_set" "prometheus" {
     }
   }
 
-/*
-  provisioner "local-exec" {
-    command = "kubectl -n ${var.namespace} patch sts prometheus --patch \"$(cat ${path.module}/patch/subpathexpr.yaml)\""
-  }
-*/
+  depends_on = [
+    kubernetes_config_map.prometheus,
+    kubernetes_service.prometheus,
+    kubernetes_service_account.prometheus,
+    kubernetes_cluster_role_binding.prometheus,
+    kubernetes_persistent_volume.prometheus,
+  ]
 }
