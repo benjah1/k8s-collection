@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "es_kibana" {
   metadata {
     name      = "es-kibana"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {
@@ -23,11 +23,23 @@ resource "kubernetes_deployment" "es_kibana" {
       spec {
         container {
           name  = "es-kibana"
-          image = "kibana:7.8.0"
+          image = "kibana:7.8.1"
 
           port {
             name           = "http"
             container_port = 5601
+          }
+
+          resources {
+            limits {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
+
+            requests {
+              cpu    = "500m"
+              memory = "512Mi"
+            }
           }
 
           env {
@@ -43,6 +55,11 @@ resource "kubernetes_deployment" "es_kibana" {
           env {
             name  = "NODE_OPTIONS"
             value = "--max-old-space-size=1800"
+          }
+
+          env {
+            name  = "LOGGING_VERBOSE"
+            value = "true"
           }
 
           readiness_probe {

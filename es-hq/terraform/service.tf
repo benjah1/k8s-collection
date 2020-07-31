@@ -1,7 +1,7 @@
 resource "kubernetes_service" "es_hq" {
   metadata {
     name      = "es-hq"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {

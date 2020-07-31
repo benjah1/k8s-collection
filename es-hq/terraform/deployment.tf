@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "es_hq" {
   metadata {
     name      = "es-hq"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {
@@ -28,6 +28,18 @@ resource "kubernetes_deployment" "es_hq" {
           port {
             name           = "http"
             container_port = 5000
+          }
+
+          resources {
+            limits {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+
+            requests {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
           }
 
           liveness_probe {

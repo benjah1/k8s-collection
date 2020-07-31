@@ -1,10 +1,10 @@
-resource "kubernetes_service_account" "filebeat" {
+resource "kubernetes_service_account" "es-filebeat" {
   metadata {
-    name      = "filebeat"
-    namespace = "monitoring"
+    name      = "es-filebeat"
+    namespace = var.namespace
 
     labels = {
-      app = "filebeat"
+      app = "es-filebeat"
     }
   }
 }

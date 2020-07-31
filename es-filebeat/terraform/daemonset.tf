@@ -1,20 +1,20 @@
-resource "kubernetes_daemonset" "filebeat" {
+resource "kubernetes_daemonset" "es-filebeat" {
   metadata {
-    name      = "filebeat"
-    namespace = "monitoring"
+    name      = "es-filebeat"
+    namespace = var.namespace
   }
 
   spec {
     selector {
       match_labels = {
-        app = "filebeat"
+        app = "es-filebeat"
       }
     }
 
     template {
       metadata {
         labels = {
-          app = "filebeat"
+          app = "es-filebeat"
         }
       }
 
@@ -45,25 +45,26 @@ resource "kubernetes_daemonset" "filebeat" {
           }
         }
 
-        init_container {
-          name              = "init-chown-data"
-          image             = "busybox:1.31.1"
-          command           = ["chown", "-R", "1000:1000", "/usr/share/filebeat/data"]
+        container {
+          name  = "filebeat"
+          image = "elastic/filebeat:7.8.0"
+          args  = ["-e", "-E", "http.enabled=true"]
 
           security_context {
             run_as_user = 0
           }
 
-          volume_mount {
-            name       = "data"
-            mount_path = "/usr/share/filebeat/data"
-          }
-        }
+          resources {
+            limits {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
 
-        container {
-          name  = "filebeat"
-          image = "elastic/filebeat:7.8.0"
-          args  = ["-e", "-E", "http.enabled=true"]
+            requests {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+          }
 
           env {
             name = "POD_NAMESPACE"
@@ -127,7 +128,7 @@ resource "kubernetes_daemonset" "filebeat" {
         }
 
         dns_policy           = "ClusterFirstWithHostNet"
-        service_account_name = "filebeat"
+        service_account_name = "es-filebeat"
         host_network         = true
       }
     }

@@ -21,9 +21,7 @@ resource "kubernetes_deployment" "es_exportor" {
 
         annotations = {
           "prometheus.io/path" = "/metrics"
-
           "prometheus.io/port" = "9114"
-
           "prometheus.io/scrape" = "true"
         }
       }
@@ -37,6 +35,18 @@ resource "kubernetes_deployment" "es_exportor" {
           port {
             name           = "http"
             container_port = 9114
+          }
+
+          resources {
+            limits {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
+
+            requests {
+              cpu    = "100m"
+              memory = "128Mi"
+            }
           }
 
           liveness_probe {

@@ -1,7 +1,7 @@
 resource "kubernetes_stateful_set" "es_master" {
   metadata {
     name      = "es-master"
-    namespace = "monitoring"
+    namespace = var.namespace
 
     labels = {
       app = "es-master"
@@ -9,7 +9,7 @@ resource "kubernetes_stateful_set" "es_master" {
   }
 
   spec {
-    replicas = 3
+    replicas = var.replicas
 
     selector {
       match_labels = {
@@ -30,9 +30,20 @@ resource "kubernetes_stateful_set" "es_master" {
           image   = "busybox:1.31.1"
           command = ["chown", "-R", "1000:1000", "/usr/share/elasticsearch/data"]
 
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
+
           volume_mount {
             name       = "data"
             mount_path = "/usr/share/elasticsearch/data"
+            sub_path_expr = "$(POD_NAME)"
           }
         }
 
@@ -58,6 +69,18 @@ resource "kubernetes_stateful_set" "es_master" {
           port {
             name           = "transport"
             container_port = 9300
+          }
+
+          resources {
+            limits {
+              cpu    = "200m"
+              memory = "768Mi"
+            }
+
+            requests {
+              cpu    = "200m"
+              memory = "768Mi"
+            }
           }
 
           env {
@@ -110,14 +133,25 @@ resource "kubernetes_stateful_set" "es_master" {
             value = "false"
           }
 
+          env {
+            name = "POD_NAME"
+            value_from {
+              field_ref {
+                api_version = "v1"
+                field_path  = "metadata.name"
+              }
+            }
+          }
+
           volume_mount {
             name       = "data"
             mount_path = "/usr/share/elasticsearch/data"
+            sub_path_expr = "$(POD_NAME)"
           }
 
           readiness_probe {
             exec {
-              command = ["sh", "-c", "#!/usr/bin/env bash -e\n# If the node is starting up wait for the cluster to be ready (request params: \"wait_for_status=green&timeout=1s\" )\n# Once it has started only check that the node itself is responding\nSTART_FILE=/tmp/.es_start_file\nhttp () {\n  local path=\"$${1}\"\n  local args=\"$${2}\"\n  set -- -XGET -s\n  if [ \"$args\" != \"\" ]; then\n    set -- \"$@\" $args\n  fi\n  if [ -n \"$${ELASTIC_USERNAME}\" ] && [ -n \"$${ELASTIC_PASSWORD}\" ]; then\n    set -- \"$@\" -u \"$${ELASTIC_USERNAME}:$${ELASTIC_PASSWORD}\"\n  fi\n  curl --output /dev/null -k \"$@\" \"http://127.0.0.1:9200$${path}\"\n}\nif [ -f \"$${START_FILE}\" ]; then\n  echo 'Elasticsearch is already running, lets check the node is healthy'\n  HTTP_CODE=$(http \"/\" \"-w %%{http_code}\")\n  RC=$?\n  if [[ $${RC} -ne 0 ]]; then\n    echo \"curl --output /dev/null -k -XGET -s -w '%%{http_code}' \\$${BASIC_AUTH} http://127.0.0.1:9200/ failed with RC $${RC}\"\n    exit $${RC}\n  fi\n  # ready if HTTP code 200, 503 is tolerable if ES version is 6.x\n  if [[ $${HTTP_CODE} == \"200\" ]]; then\n    exit 0\n  elif [[ $${HTTP_CODE} == \"503\" && \"7\" == \"6\" ]]; then\n    exit 0\n  else\n    echo \"curl --output /dev/null -k -XGET -s -w '%%{http_code}' \\$${BASIC_AUTH} http://127.0.0.1:9200/ failed with HTTP code $${HTTP_CODE}\"\n    exit 1\n  fi\nelse\n  echo 'Waiting for elasticsearch cluster to become ready (request params: \"wait_for_status=green&timeout=1s\" )'\n  if http \"/_cluster/health?wait_for_status=green&timeout=1s\" \"--fail\" ; then\n    touch $${START_FILE}\n    exit 0\n  else\n    echo 'Cluster is not yet ready (request params: \"wait_for_status=green&timeout=1s\" )'\n    exit 1\n  fi\nfi\n"]
+              command = ["sh", "-c", "${file("${path.module}/scripts/readiness.sh")}"]
             }
 
             initial_delay_seconds = 10
@@ -131,7 +165,7 @@ resource "kubernetes_stateful_set" "es_master" {
         container {
           name    = "elasticsearch-master-graceful-termination-handler"
           image   = "elasticsearch:7.8.0"
-          command = ["sh", "-c", "#!/usr/bin/env bash\nset -eo pipefail\nhttp () {\n    local path=\"$${1}\"\n    if [ -n \"$${ELASTIC_USERNAME}\" ] && [ -n \"$${ELASTIC_PASSWORD}\" ]; then\n      BASIC_AUTH=\"-u $${ELASTIC_USERNAME}:$${ELASTIC_PASSWORD}\"\n    else\n      BASIC_AUTH=''\n    fi\n    curl -XGET -s -k --fail $${BASIC_AUTH} http://es-master.monitoring:9200$${path}\n}\ncleanup () {\n  while true ; do\n    local master=\"$(http \"/_cat/master?h=node\" || echo \"\")\"\n    if [[ $master == \"es-master.monitoring\"* && $master != \"$${NODE_NAME}\" ]]; then\n      echo \"This node is not master.\"\n      break\n    fi\n    echo \"This node is still master, waiting gracefully for it to step down\"\n    sleep 1\n  done\n  exit 0\n}\ntrap cleanup SIGTERM\nsleep infinity &\nwait $!\n"]
+          command = ["sh", "-c", "${file("${path.module}/scripts/termination.sh")}"]
 
           env {
             name = "NODE_NAME"
@@ -161,35 +195,18 @@ resource "kubernetes_stateful_set" "es_master" {
             }
           }
         }
+
+        volume {
+          name = "data"
+          persistent_volume_claim {
+            claim_name = kubernetes_persistent_volume.es_master.metadata.0.labels.pvc
+          }
+        }
       }
     }
 
     update_strategy {
       type = "RollingUpdate"
-    }
-
-    volume_claim_template {
-      metadata {
-        name = "data"
-      }
-
-      spec {
-        access_modes = ["ReadWriteOnce"]
-
-        selector {
-          match_labels = {
-            app = "es-master"
-          }
-        }
-
-        resources {
-          requests = {
-            storage = "5Gi"
-          }
-        }
-
-        storage_class_name = "standard"
-      }
     }
 
     service_name          = "es-master"

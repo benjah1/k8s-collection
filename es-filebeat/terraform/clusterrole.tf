@@ -1,9 +1,9 @@
 resource "kubernetes_cluster_role" "filebeat_cluster_role" {
   metadata {
-    name = "filebeat-cluster-role"
+    name = "es-filebeat-cluster-role"
 
     labels = {
-      app = "filebeat"
+      app = "es-filebeat"
     }
   }
 

@@ -1,9 +1,10 @@
-resource "kubernetes_persistent_volume" "pv_es_data_a" {
+resource "kubernetes_persistent_volume" "es_data" {
   metadata {
-    name = "pv-es-data-a"
+    name = "es-data"
 
     labels = {
       app = "es-data"
+      pvc = "data-es-data"
     }
   }
 
@@ -12,43 +13,15 @@ resource "kubernetes_persistent_volume" "pv_es_data_a" {
       storage = "5Gi"
     }
 
-    access_modes                     = ["ReadWriteOnce"]
+    access_modes                     = ["ReadWriteMany"]
     persistent_volume_reclaim_policy = "Recycle"
     storage_class_name               = "standard"
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/es-data-a"
+        path = "/opt/kind-data/es-data"
         type = "Directory"
       }
     }
   }
 }
-
-resource "kubernetes_persistent_volume" "pv_es_data_b" {
-  metadata {
-    name = "pv-es-data-b"
-
-    labels = {
-      app = "es-data"
-    }
-  }
-
-  spec {
-    capacity = {
-      storage = "5Gi"
-    }
-
-    access_modes                     = ["ReadWriteOnce"]
-    persistent_volume_reclaim_policy = "Recycle"
-    storage_class_name               = "standard"
-
-    persistent_volume_source {
-      host_path {
-        path = "/opt/kind-data/es-data-b"
-        type = "Directory"
-      }
-    }
-  }
-}
-

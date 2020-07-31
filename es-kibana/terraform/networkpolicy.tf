@@ -1,13 +1,13 @@
-resource "kubernetes_network_policy" "es_exporter_to_prometheus" {
+resource "kubernetes_network_policy" "es_kibana_to_es_master" {
   metadata {
-    name      = "ingress-es-exporter-to-prometheus"
+    name      = "ingress-es-kibana-to-es-master"
     namespace = var.namespace
   }
 
   spec {
     pod_selector {
       match_labels = {
-        app = "prometheus"
+        app = "es-master"
       }
     }
 
@@ -15,7 +15,7 @@ resource "kubernetes_network_policy" "es_exporter_to_prometheus" {
       from {
         pod_selector {
           match_labels = {
-            app = "es-exporter"
+            app = "es-kibana"
           }
         }  
 
@@ -27,7 +27,7 @@ resource "kubernetes_network_policy" "es_exporter_to_prometheus" {
       }
 
       ports {
-        port = "9090"
+        port = "9200"
         protocol = "TCP"
       }
     }

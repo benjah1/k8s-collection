@@ -1,6 +1,6 @@
-resource "kubernetes_network_policy" "prometheus" {
+resource "kubernetes_network_policy" "node_exporter_to_prometheus" {
   metadata {
-    name      = "ingress-prometheus"
+    name      = "ingress-prometheus-to-prometheus"
     namespace = var.namespace
   }
 
@@ -15,21 +15,7 @@ resource "kubernetes_network_policy" "prometheus" {
       from {
         pod_selector {
           match_labels = {
-            app = "grafana"
-          }
-        }  
-
-        namespace_selector {
-          match_labels = {
-            name = var.namespace
-          }
-        }
-      }
-
-      from {
-        pod_selector {
-          match_labels = {
-            app = "node-exporter"
+            app = "prometheus"
           }
         }  
 
