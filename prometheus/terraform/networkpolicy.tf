@@ -1,4 +1,4 @@
-resource "kubernetes_network_policy" "node_exporter_to_prometheus" {
+resource "kubernetes_network_policy" "prometheus_to_prometheus" {
   metadata {
     name      = "ingress-prometheus-to-prometheus"
     namespace = var.namespace
