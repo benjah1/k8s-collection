@@ -46,6 +46,7 @@ module "node-exporter" {
   namespace = kubernetes_namespace.monitoring.metadata.0.name
 }
 
+/*
 module "es-master" {
   source = "../../es-master/terraform"
 }
@@ -69,3 +70,4 @@ module "es-filebeat" {
 module "es-exportor" {
   source = "../../es-exportor/terraform"
 }
+*/

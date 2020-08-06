@@ -1,7 +1,7 @@
 resource "kubernetes_deployment" "es_exportor" {
   metadata {
     name      = "es-exportor"
-    namespace = "monitoring"
+    namespace = var.namespace
   }
 
   spec {

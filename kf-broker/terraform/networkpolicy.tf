@@ -1,13 +1,13 @@
-resource "kubernetes_network_policy" "prometheus_to_prometheus" {
+resource "kubernetes_network_policy" "broker_to_broker" {
   metadata {
-    name      = "ingress-prometheus-to-prometheus"
+    name      = "ingress-broker-to-broker"
     namespace = var.namespace
   }
 
   spec {
     pod_selector {
       match_labels = {
-        app = "prometheus"
+        app = "broker"
       }
     }
 
@@ -15,7 +15,7 @@ resource "kubernetes_network_policy" "prometheus_to_prometheus" {
       from {
         pod_selector {
           match_labels = {
-            app = "prometheus"
+            app = "broker"
           }
         }  
 
@@ -27,7 +27,7 @@ resource "kubernetes_network_policy" "prometheus_to_prometheus" {
       }
 
       ports {
-        port = "9090"
+        port = "9092"
         protocol = "TCP"
       }
     }
@@ -36,16 +36,16 @@ resource "kubernetes_network_policy" "prometheus_to_prometheus" {
   }
 }
 
-resource "kubernetes_network_policy" "prometheus_to_ex_exporter" {
+resource "kubernetes_network_policy" "broker_to_zk" {
   metadata {
-    name      = "ingress-prometheus-to-es-exporter"
+    name      = "ingress-broker-to-zk"
     namespace = var.namespace
   }
 
   spec {
     pod_selector {
       match_labels = {
-        app = "es-exporter"
+        app = "zk"
       }
     }
 
@@ -53,7 +53,7 @@ resource "kubernetes_network_policy" "prometheus_to_ex_exporter" {
       from {
         pod_selector {
           match_labels = {
-            app = "prometheus"
+            app = "broker"
           }
         }  
 
@@ -65,7 +65,7 @@ resource "kubernetes_network_policy" "prometheus_to_ex_exporter" {
       }
 
       ports {
-        port = "9114"
+        port = "2181"
         protocol = "TCP"
       }
     }
@@ -73,4 +73,3 @@ resource "kubernetes_network_policy" "prometheus_to_ex_exporter" {
     policy_types = ["Ingress"]
   }
 }
-

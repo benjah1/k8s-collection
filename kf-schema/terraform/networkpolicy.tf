@@ -1,13 +1,13 @@
-resource "kubernetes_network_policy" "es_exporter_to_es_master" {
+resource "kubernetes_network_policy" "schema_to_broker" {
   metadata {
-    name      = "ingress-es-exporter-to-es-master"
+    name      = "ingress-schema-to-broker"
     namespace = var.namespace
   }
 
   spec {
     pod_selector {
       match_labels = {
-        app = "es-master"
+        app = "broker"
       }
     }
 
@@ -15,7 +15,7 @@ resource "kubernetes_network_policy" "es_exporter_to_es_master" {
       from {
         pod_selector {
           match_labels = {
-            app = "es-exporter"
+            app = "schema"
           }
         }  
 
@@ -27,7 +27,7 @@ resource "kubernetes_network_policy" "es_exporter_to_es_master" {
       }
 
       ports {
-        port = "9200"
+        port = "9092"
         protocol = "TCP"
       }
     }

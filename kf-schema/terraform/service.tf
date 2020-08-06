@@ -1,6 +1,6 @@
-resource "kubernetes_service" "es_kibana" {
+resource "kubernetes_service" "schema" {
   metadata {
-    name      = "es-kibana"
+    name      = "schema"
     namespace = var.namespace
   }
 
@@ -8,12 +8,12 @@ resource "kubernetes_service" "es_kibana" {
     port {
       name        = "http"
       protocol    = "TCP"
-      port        = 5601
-      target_port = "5601"
+      port        = 8081
+      target_port = "8081"
     }
 
     selector = {
-      app = "es-kibana"
+      app = "schema"
     }
 
     cluster_ip = "None"

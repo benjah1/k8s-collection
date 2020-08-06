@@ -1,13 +1,13 @@
-resource "kubernetes_network_policy" "es_exporter_to_es_master" {
+resource "kubernetes_network_policy" "zk_to_zk" {
   metadata {
-    name      = "ingress-es-exporter-to-es-master"
+    name      = "ingress-zk-to-zk"
     namespace = var.namespace
   }
 
   spec {
     pod_selector {
       match_labels = {
-        app = "es-master"
+        app = "zk"
       }
     }
 
@@ -15,7 +15,7 @@ resource "kubernetes_network_policy" "es_exporter_to_es_master" {
       from {
         pod_selector {
           match_labels = {
-            app = "es-exporter"
+            app = "zk"
           }
         }  
 
@@ -27,7 +27,12 @@ resource "kubernetes_network_policy" "es_exporter_to_es_master" {
       }
 
       ports {
-        port = "9200"
+        port = "2888"
+        protocol = "TCP"
+      }
+
+      ports {
+        port = "3888"
         protocol = "TCP"
       }
     }
