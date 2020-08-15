@@ -1,0 +1,81 @@
+---
+version: '3.8'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:5.5.1
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    volumes:
+      - /opt/docker-compose/zookeeper:/var/lib/zookeeper
+
+  kafka:
+    image: confluentinc/cp-kafka:5.5.1
+    depends_on:
+      - zookeeper
+    ports:
+      - 9092:9092
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://kafka:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    volumes:
+      - /opt/docker-compose/kafka:/var/lib/kafka
+
+  schema:
+    image: confluentinc/cp-schema-registry:5.5.1
+    ports:
+      - 8081:8081
+    environment:
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
+      SCHEMA_REGISTRY_HOST_NAME: schema
+    depends_on:
+      - kafka
+
+  consul:
+    image: consul:1.7.3
+    ports:
+      - 8500:8500
+    command: agent -server -bind 0.0.0.0 -client 0.0.0.0 -bootstrap-expect 1 -config-file=/consul/config/config.json
+    volumes:
+      - ./consul/config/consul-config.json:/consul/config/config.json
+      - /opt/docker-compose/consul/data:/consul/data
+
+  vault:
+    image: vault:1.4.2
+    ports:
+      - 8200:8200
+    volumes:
+      - ./vault/config:/vault/config
+      - ./vault/policies:/vault/policies
+      - /opt/docker-compose/vault/logs:/vault/logs
+    environment:
+      - VAULT_ADDR=http://127.0.0.1:8200
+      - VAULT_API_ADDR=http://vault:8201
+    command: vault server -config=/vault/config/vault-config.hcl
+    cap_add:
+      - IPC_LOCK
+    depends_on:
+      - consul
+
+  mysql:
+    image: mysql:8.0
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+    volumes:
+      - /opt/docker-compose/mysql:/var/lib/mysql
+
+  java:
+    image: openjdk:11
+    ports:
+      - 8080:8080
+    volumes:
+      - ../:/app
+    command: tail -f /dev/null

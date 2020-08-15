@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: ms-a
+
+  cloud:
+    consul:
+      host: consul
+      port: 8500
+      config:
+        enabled: true
+
+    vault:
+      host: vault
+      token: s.wKwep8VyxvEcFvVAoC6vvoLY
+      scheme: http
+      authentication: TOKEN
+      kv:
+        enabled: true
+      mysql:
+        enabled: true
+        backend: mysql
+        role: ms-a
