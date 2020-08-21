@@ -1,23 +1,6 @@
-provider "consul" {
-  address    = "localhost:8500"
-}
-
-resource "consul_key_prefix" "ms-a" {
-  path_prefix = "config/ms-a/"
-
-  subkeys = {
-    "logging/level/root"                      = "INFO"
-    "logging/level/org/srpingframework/kafka" = "INFO"
-    "logging/level/org/apache/kafka"          = "INFO"
-
-    "spring/kafka/bootstrap-servers"          = "kafka:9092"
-  }
-}
-
-
 provider "vault" {
   address = "http://localhost:8200"
-  token = "s.wKwep8VyxvEcFvVAoC6vvoLY"
+  token = var.vault_token
 }
 
 resource "vault_mount" "secret" {
@@ -62,9 +45,40 @@ resource "vault_database_secret_backend_role" "role" {
   backend             = vault_mount.mysql.path
   name                = "ms-a"
   db_name             = vault_database_secret_backend_connection.mysql-ms-a.name
+  default_ttl         = 20
+  max_ttl             = 60
   creation_statements = [
     "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';",
     "GRANT SELECT ON messages.* TO '{{name}}'@'%';",
     "GRANT INSERT ON messages.* TO '{{name}}'@'%';"
+  ]
+}
+
+resource "vault_consul_secret_backend" "consul" {
+  path        = "consul"
+  description = "Manages the Consul backend"
+
+  address = "consul:8500"
+  token   = var.consul_token
+}
+
+resource "vault_consul_secret_backend_role" "consul-ms-a-type-a" {
+  name    = "vault-ms-a-type-a"
+  backend = vault_consul_secret_backend.consul.path
+
+  policies = [
+    consul_acl_policy.read-policy-ms-a.name,
+    consul_acl_policy.read-policy-ms-a-type-a.name,
+    consul_acl_policy.read-policy-ms-a-type-b.name
+  ]
+}
+
+resource "vault_consul_secret_backend_role" "consul-ms-a-type-b" {
+  name    = "ms-a-type-b"
+  backend = vault_consul_secret_backend.consul.path
+
+  policies = [
+    consul_acl_policy.read-policy-ms-a.name,
+    consul_acl_policy.read-policy-ms-a-type-b.name
   ]
 }

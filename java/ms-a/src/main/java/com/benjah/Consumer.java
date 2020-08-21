@@ -10,7 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.Date;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+
+@RefreshScope
 @Component
+@ConditionalOnProperty(prefix = "feature.toggle", name = "consumer", havingValue="true")
 public class Consumer {
 
 		@Value("${spring.kafka.topic}")
@@ -33,10 +38,3 @@ public class Consumer {
         messageDao.insert(msg);
     }
 }
-
-/*
-import org.springframework.beans.factory.annotation.Autowired;
-
-    @Autowired
-    DataSource dataSource;
-*/

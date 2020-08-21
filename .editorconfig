@@ -12,3 +12,11 @@ indent_size = 2
 [*.tf]
 indent_style = space
 indent_size = 2
+
+[*.xml]
+indent_style = tab
+indent_size = 2
+
+[*.java]
+indent_style = tab
+indent_size = 2

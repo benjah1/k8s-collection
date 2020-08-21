@@ -3,12 +3,6 @@ spring:
     name: ms-a
 
   cloud:
-    consul:
-      host: consul
-      port: 8500
-      config:
-        enabled: true
-
     vault:
       host: vault
       token: s.wKwep8VyxvEcFvVAoC6vvoLY
@@ -20,3 +14,10 @@ spring:
         enabled: true
         backend: mysql
         role: ms-a
+
+    consul:
+      host: consul
+      port: 8500
+      token: 8deab17d-0098-cda6-80da-898315392eb6
+      config:
+        enabled: true
