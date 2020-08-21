@@ -5,7 +5,7 @@ spring:
   cloud:
     vault:
       host: vault
-      token: s.wKwep8VyxvEcFvVAoC6vvoLY
+      token: s.NHWZYD5YtdVQ5uwOCcEWOAoP
       scheme: http
       authentication: TOKEN
       kv:

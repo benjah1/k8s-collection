@@ -18,9 +18,7 @@ resource "consul_key_prefix" "ms-a" {
     "feature/toggle/restapi"                  = "true"
     "feature/toggle/consumer"                 = "false"
 
-    "datasource/url" = "jdbc:mysql://mysql:3306/messages?useSSL=false&useUnicode=true&characterEncoding=UTF-8"
-    "datasource/driver-class-name" = "com.mysql.cj.jdbc.Driver"
- 
+    "spring/datasource/url" = "jdbc:mysql://mysql:3306/messages?useSSL=false&useUnicode=true&characterEncoding=UTF-8"
   }
 }
 
@@ -37,7 +35,7 @@ resource "consul_key_prefix" "type-b" {
   path_prefix = "config/ms-a,type-b/"
 
   subkeys = {
-    "logging/level/root"                      = "DEBUG"
+    "logging/level/root"                      = "INFO"
     "server/port"                             = "8081"
     "feature/toggle/restapi"                  = "false"
     "feature/toggle/consumer"                 = "true"
