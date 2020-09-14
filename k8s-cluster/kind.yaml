@@ -9,6 +9,11 @@ nodes:
   extraMounts:
   - hostPath: /opt/kind-data
     containerPath: /opt/kind-data
+  extraPortMappings:
+  - containerPort: 6443
+    hostPort: 6443
+    listenAddress: "0.0.0.0"
+    protocol: TCP
 - role: worker
   image: kind-node:v1
   extraMounts:

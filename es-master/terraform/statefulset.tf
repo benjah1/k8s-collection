@@ -27,7 +27,7 @@ resource "kubernetes_stateful_set" "es_master" {
       spec {
         init_container {
           name    = "init-chown-data"
-          image   = "busybox:1.31.1"
+          image   = var.image_busybox
           command = ["chown", "-R", "1000:1000", "/usr/share/elasticsearch/data"]
 
           env {
@@ -49,7 +49,7 @@ resource "kubernetes_stateful_set" "es_master" {
 
         init_container {
           name    = "configure-sysctl"
-          image   = "elasticsearch:7.8.0"
+          image   = var.image_elasticsearch
           command = ["sysctl", "-w", "vm.max_map_count=262144"]
 
           security_context {
@@ -59,7 +59,7 @@ resource "kubernetes_stateful_set" "es_master" {
 
         container {
           name  = "es-master"
-          image = "elasticsearch:7.8.0"
+          image = var.image_elasticsearch
 
           port {
             name           = "http"
@@ -73,13 +73,13 @@ resource "kubernetes_stateful_set" "es_master" {
 
           resources {
             limits {
-              cpu    = "200m"
-              memory = "768Mi"
+              cpu    = var.resource_cpu
+              memory = var.resource_memory
             }
 
             requests {
-              cpu    = "200m"
-              memory = "768Mi"
+              cpu    = var.resource_cpu
+              memory = var.resource_memory
             }
           }
 
@@ -115,7 +115,7 @@ resource "kubernetes_stateful_set" "es_master" {
 
           env {
             name  = "ES_JAVA_OPTS"
-            value = "-Xmx512m -Xms512m"
+            value = var.heap_size
           }
 
           env {
@@ -164,7 +164,7 @@ resource "kubernetes_stateful_set" "es_master" {
 
         container {
           name    = "elasticsearch-master-graceful-termination-handler"
-          image   = "elasticsearch:7.8.0"
+          image   = var.image_elasticsearch
           command = ["sh", "-c", "${file("${path.module}/scripts/termination.sh")}"]
 
           env {

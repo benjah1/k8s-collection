@@ -33,3 +33,5 @@ APISERVER=https://${MASTER_IP}:6443
 cat kube-router.yaml | \
 	sed "s|%APISERVER%|${APISERVER}|g" | \
   kubectl apply -f -
+
+kubectl -n kube-system apply -f ./sa-admin/ 

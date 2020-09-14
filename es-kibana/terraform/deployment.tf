@@ -32,13 +32,13 @@ resource "kubernetes_deployment" "es_kibana" {
 
           resources {
             limits {
-              cpu    = "500m"
-              memory = "512Mi"
+              cpu    = "2000m"
+              memory = "1Gi"
             }
 
             requests {
-              cpu    = "500m"
-              memory = "512Mi"
+              cpu    = "1000m"
+              memory = "1Gi"
             }
           }
 
