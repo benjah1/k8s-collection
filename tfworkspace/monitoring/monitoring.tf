@@ -46,13 +46,24 @@ module "node-exporter" {
   namespace = kubernetes_namespace.monitoring.metadata.0.name
 }
 
-/*
 module "es-master" {
   source = "../../es-master/terraform"
+  namespace = kubernetes_namespace.monitoring.metadata.0.name
+  resource_cpu = var.es_resource_cpu
+  resource_memory = var.es_resource_memory
+  heap_size = var.es_heap_size
+  image_busybox = var.es_image_busybox
+  image_elasticsearch = var.es_image_elasticsearch
 }
 
 module "es-data" {
   source = "../../es-data/terraform"
+  namespace = kubernetes_namespace.monitoring.metadata.0.name
+  resource_cpu = var.es_resource_cpu
+  resource_memory = var.es_resource_memory
+  heap_size = var.es_heap_size
+  image_busybox = var.es_image_busybox
+  image_elasticsearch = var.es_image_elasticsearch
 }
 
 module "es-hq" {
@@ -70,4 +81,3 @@ module "es-filebeat" {
 module "es-exportor" {
   source = "../../es-exportor/terraform"
 }
-*/
