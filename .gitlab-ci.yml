@@ -1,8 +1,12 @@
 hello:
   image: kroniak/ssh-client:3.11 
   script:
-    - mkdir /root/.ssh
-    - cp ${PRI_KEY} /root/.ssh/id_rsa
-    - chmod 400 /root/.ssh/id_rsa
+    - eval $(ssh-agent -s)
+    - cat ${PRI_KEY} | ssh-add -
     - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 ls
+    - |
+      cat <<EOL | ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50
+      ls &&
+      pwd
+      EOL
   when: manual
