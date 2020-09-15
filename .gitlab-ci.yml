@@ -13,7 +13,6 @@ hello:
       cd Documents &&
       if [ ! -d dotfiles ]; then git clone https://github.com/benjah1/dotfiles.git; fi &&
       if [ -d dotfiles ]; then pushd dotfiles; git pull; popd; fi &&
-      bash ./scripts/vagrant_up.sh ${PUB_KEY} &&
-      docker ps
       EOL
+    - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 "bash .Documents/scripts/vagrant_up.sh ${PUB_KEY}"
   when: manual
