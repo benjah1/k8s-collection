@@ -9,4 +9,6 @@ hello:
       ls &&
       pwd
       EOL
+    - pwd
+    - ls
   when: manual
