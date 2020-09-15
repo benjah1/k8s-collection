@@ -6,7 +6,7 @@ hello:
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
     - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 ls
-    - scp -o "StrictHostKeyChecking=no" -r scripts benjah1@192.168.0.50
+    - scp -o "StrictHostKeyChecking=no" -r scripts benjah1@192.168.0.50:~/Documents
     - |
       cat <<EOL | ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50
       ls &&
