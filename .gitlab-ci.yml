@@ -15,4 +15,5 @@ hello:
       if [ -d dotfiles ]; then pushd dotfiles; git pull; popd; fi &&
       bash ./scripts/vagrant_up.sh ${PUB_KEY}
       EOL
+    - ls
   when: manual
