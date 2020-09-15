@@ -6,9 +6,9 @@ services:
     container_name: gitlab-web
     hostname: gitlab-web
     volumes:
-      - './data/gitlab-config:/etc/gitlab'
-      - './data/gitlab-logs:/var/log/gitlab'
-      - './data/gitlab-data:/var/opt/gitlab'
+      - '/opt/gitlab/gitlab-config:/etc/gitlab'
+      - '/opt/gitlab/gitlab-logs:/var/log/gitlab'
+      - '/opt/gitlab/gitlab-data:/var/opt/gitlab'
     ports:
       - '2223:22'
       - '8080:80'
@@ -35,7 +35,7 @@ services:
     container_name: gitlab-runner1
     hostname: gitlab-runner1
     volumes:
-      - './data/gitlab-runner1-config:/etc/gitlab-runner:Z'
+      - '/opt/gitlab/gitlab-runner1-config:/etc/gitlab-runner:Z'
       - '/var/run/docker.sock:/var/run/docker.sock'
     networks:
       - gitlab-network
