@@ -3,5 +3,6 @@ hello:
   script:
     - mkdir /root/.ssh
     - echo ${PRI_KEY} > /root/.ssh/id_rsa
+    - chmod 400 /root/.ssh/id_rsa
     - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 ls
   when: manual
