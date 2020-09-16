@@ -13,8 +13,8 @@ then
 			--name vagrant \
 			--privileged \
 			--mount type=tmpfs,destination=/vm,tmpfs-size=30g \
-			-v $(pwd)/dotfiles:/root/dotfiles \
-			-w /root/dotfiles/1804-ram/ \
+			-v $(pwd)/dotfiles:/home/benjah1/Documents/dotfiles \
+			-w /home/benjah1/Documents/dotfiles/1804-ram/ \
 			--net host \
 			vagrant:test \
 			tail -f /dev/null
@@ -44,5 +44,6 @@ then
 	docker exec -it vagrant vagrant up 
 
 	echo "inserting ssh public key"
-	docker exec vagrant vagrant ssh -- 'echo "${1}" >> /home/vagrant/.ssh/authorized_keys'
+	echo "${1}"
+	docker exec vagrant vagrant ssh -- "echo '${1}' >> /home/vagrant/.ssh/authorized_keys"
 fi
