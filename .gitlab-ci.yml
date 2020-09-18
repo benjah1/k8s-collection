@@ -21,7 +21,7 @@ vagrant_up:
 
 kind_up:
   image: kroniak/ssh-client:3.11 
-  variable:
+  variables:
     REMOTE_HOST: 192.168.51.103
   script:
     - eval $(ssh-agent -s)
