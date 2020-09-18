@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  creationTimestamp: null
-  name: sa-admin
-  uid: 9eaefe82-0e20-4486-9f6a-931a94efcc2a
-secrets:
-  - name: sa-admin-token-vcpsl

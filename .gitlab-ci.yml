@@ -1,10 +1,9 @@
-hello:
+vagrant_up:
   image: kroniak/ssh-client:3.11 
-  variables: 
-    PUB_KEY: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDJOt2eCC7Azy/YKfabVuBDG2UOt+uU2zZgA7lMYobTYvs+5z61kDQZHypGwC7cHq4JY8xbovMkq7LbQSOPtkmOaT6LxHIWA4MRALTd5UGxFmoPX2L2twjSbsXCgbb9Q4M5oarVbanwrxAlws+SwnrGQQQNab1/FEHzTi2UhgeRnWiHy0nAP21bxcun5NBCUCj+CgqUTV2iA/dpn3gJExsbuE+VzyWGJquoZLGG5o0JFOmDVlw/OB6eNGjUOK2t6GErQG0cBPMLTw2JV8TmSrC4SVsqBadpwpli7Q82KZxflrAhRvS7JdndSwR5HU0QrkVYPMz14O1GMggdj6tq5rrpP99TWs5mXWXHeKgvBCpiNKdqW78Ft+sNoFKE38CkxUIsjMLVwVb8Xsb/jORK+Te75NRvmH6gkE+wDJ9asK2RVXzHnEXXJ9i7MYEc8Em5rfnfeXIxQDxnO8TD/d+e+CtN3mJIFOHlFyflNJdmK0YSDdPTcP5BkRyQQfvCdnFHbEM= Benjamin@benjamin-pc"
   script:
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
+    - export PUB_KEY_VALUE=$(cat ${PUB_KEY})
     - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 ls
     - scp -o "StrictHostKeyChecking=no" -r scripts benjah1@192.168.0.50:~/Documents
     - |
@@ -13,9 +12,32 @@ hello:
       cd Documents &&
       if [ ! -d dotfiles ]; then git clone https://github.com/benjah1/dotfiles.git; fi &&
       if [ -d dotfiles ]; then pushd dotfiles; git pull; popd; fi &&
-      bash ./scripts/vagrant_up.sh "${PUB_KEY}" &&
+      bash ./scripts/vagrant_up.sh "${PUB_KEY_VALUE}" &&
       docker ps &&
       exit
+      EOL
+    - ls
+  when: manual
+
+kind_up:
+  image: kroniak/ssh-client:3.11 
+  variable:
+    REMOTE_HOST: 192.168.51.103
+  script:
+    - eval $(ssh-agent -s)
+    - cat ${PRI_KEY} | ssh-add -
+    - export K8S_CA_KEY_VALUE=$(cat ${K8S_CA_KEY})
+    - export K8S_CA_CRT_VALUE=$(cat ${K8S_CA_CRT})
+    - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant_up@${REMOTE_HOST}:~/Documents
+    - |
+      cat <<EOL | ssh -o "StrictHostKeyChecking=no" vagrant@${REMOTE_HOST}
+      ls &&
+      cd ~/Documents/k8s-cluster &&
+      mkdir -p /home/vagrant/kind-data/pki &&
+      if [ ! /home/vagrant/kind-data/pki/ca.key ]; then echo "${K8S_CA_KEY_VALUE}" > /home/vagrant/kind-data/pki/ca.key; fi &&
+      if [ ! /home/vagrant/kind-data/pki/ca.crt ]; then echo "${K8S_CA_CRT_VALUE}" > /home/vagrant/kind-data/pki/ca.crt; fi &&
+      bash ./cluster_up.sh &&
+      docker ps
       EOL
     - ls
   when: manual

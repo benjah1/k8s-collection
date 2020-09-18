@@ -14,7 +14,6 @@ RES=$(docker image ls | egrep "kind-node +v1")
 
 if [ "$?" == "1" ]
 then
-
 	echo ""
 	echo "Build image kind-node"
 	docker build -t kind-node:v1 -f kind-node.dockerfile .
@@ -30,8 +29,8 @@ MASTER_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}
 
 APISERVER=https://${MASTER_IP}:6443
 
-cat kube-router.yaml | \
+cat ./yaml/kube-router.yaml | \
 	sed "s|%APISERVER%|${APISERVER}|g" | \
   kubectl apply -f -
 
-kubectl -n kube-system apply -f ./sa-admin/ 
+kubectl -n kube-system apply -f ./yaml/admin-binding.yaml

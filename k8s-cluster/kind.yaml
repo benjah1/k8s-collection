@@ -7,8 +7,10 @@ nodes:
 - role: control-plane
   image: kind-node:v1
   extraMounts:
-  - hostPath: /opt/kind-data
+  - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
+  - hostPath: /home/vagrant/kind-data/pki
+    containerPath: /etc/kubernetes/pki
   extraPortMappings:
   - containerPort: 6443
     hostPort: 6443
@@ -17,15 +19,15 @@ nodes:
 - role: worker
   image: kind-node:v1
   extraMounts:
-  - hostPath: /opt/kind-data
+  - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
 - role: worker
   image: kind-node:v1
   extraMounts:
-  - hostPath: /opt/kind-data
+  - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
 - role: worker
   image: kind-node:v1
   extraMounts:
-  - hostPath: /opt/kind-data
+  - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
