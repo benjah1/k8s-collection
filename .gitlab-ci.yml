@@ -1,4 +1,4 @@
-vagrant_up:
+01_vagrant_up:
   image: kroniak/ssh-client:3.11 
   script:
     - eval $(ssh-agent -s)
@@ -18,23 +18,24 @@ vagrant_up:
       EOL
   when: manual
 
-kind_up:
+02_kind_up:
   image: kroniak/ssh-client:3.11 
   variables:
     REMOTE_HOST: 192.168.51.103
   script:
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
-    - export K8S_CA_KEY_VALUE=$(cat ${K8S_CA_KEY})
-    - export K8S_CA_CRT_VALUE=$(cat ${K8S_CA_CRT})
+    - mkdir k8s-cluster/key
+    - cp $K8S_CA_KEY k8s-cluster/key/ca.key
+    - cp $K8S_CA_CRT k8s-cluster/key/ca.crt
     - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant@${REMOTE_HOST}:~/Documents
     - |
       cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt vagrant@${REMOTE_HOST}
       ls &&
       cd ~/Documents/k8s-cluster &&
       mkdir -p /home/vagrant/kind-data/pki &&
-      if [ ! -f /home/vagrant/kind-data/pki/ca.key ]; then echo "${K8S_CA_KEY_VALUE}" > /home/vagrant/kind-data/pki/ca.key; fi &&
-      if [ ! -f /home/vagrant/kind-data/pki/ca.crt ]; then echo "${K8S_CA_CRT_VALUE}" > /home/vagrant/kind-data/pki/ca.crt; fi &&
+      if [ ! -f /home/vagrant/kind-data/pki/ca.key ]; then cp key/ca.key /home/vagrant/kind-data/pki/ca.key; fi &&
+      if [ ! -f /home/vagrant/kind-data/pki/ca.crt ]; then cp key/ca.crt /home/vagrant/kind-data/pki/ca.crt; fi &&
       bash ./cluster_up.sh &&
       docker ps &&
       exit
