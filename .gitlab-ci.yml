@@ -28,7 +28,7 @@ kind_up:
     - cat ${PRI_KEY} | ssh-add -
     - export K8S_CA_KEY_VALUE=$(cat ${K8S_CA_KEY})
     - export K8S_CA_CRT_VALUE=$(cat ${K8S_CA_CRT})
-    - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant_up@${REMOTE_HOST}:~/Documents
+    - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant@${REMOTE_HOST}:~/Documents
     - |
       cat <<EOL | ssh -o "StrictHostKeyChecking=no" vagrant@${REMOTE_HOST}
       ls &&
