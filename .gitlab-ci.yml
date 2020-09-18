@@ -16,7 +16,6 @@ vagrant_up:
       docker ps &&
       exit
       EOL
-    - ls
   when: manual
 
 kind_up:
@@ -30,14 +29,14 @@ kind_up:
     - export K8S_CA_CRT_VALUE=$(cat ${K8S_CA_CRT})
     - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant@${REMOTE_HOST}:~/Documents
     - |
-      cat <<EOL | ssh -o "StrictHostKeyChecking=no" vagrant@${REMOTE_HOST}
+      cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt vagrant@${REMOTE_HOST}
       ls &&
       cd ~/Documents/k8s-cluster &&
       mkdir -p /home/vagrant/kind-data/pki &&
-      if [ ! /home/vagrant/kind-data/pki/ca.key ]; then echo "${K8S_CA_KEY_VALUE}" > /home/vagrant/kind-data/pki/ca.key; fi &&
-      if [ ! /home/vagrant/kind-data/pki/ca.crt ]; then echo "${K8S_CA_CRT_VALUE}" > /home/vagrant/kind-data/pki/ca.crt; fi &&
+      if [ ! -f /home/vagrant/kind-data/pki/ca.key ]; then echo "${K8S_CA_KEY_VALUE}" > /home/vagrant/kind-data/pki/ca.key; fi &&
+      if [ ! -f /home/vagrant/kind-data/pki/ca.crt ]; then echo "${K8S_CA_CRT_VALUE}" > /home/vagrant/kind-data/pki/ca.crt; fi &&
       bash ./cluster_up.sh &&
-      docker ps
+      docker ps &&
+      exit
       EOL
-    - ls
   when: manual
