@@ -6,7 +6,7 @@ RES=$(kubectl --context kind-kind get node 2>/dev/null 1>/dev/null)
 if [ "$?" == "0" ]
 then 
 	echo "The cluster is already running!!!"
-	exit 1
+	exit 0
 fi
 
 RES=$(docker image ls | egrep "kind-node +v1")

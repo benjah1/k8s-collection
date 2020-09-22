@@ -4,10 +4,9 @@
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
     - export PUB_KEY_VALUE=$(cat ${PUB_KEY})
-    - ssh -o "StrictHostKeyChecking=no" benjah1@192.168.0.50 ls
-    - scp -o "StrictHostKeyChecking=no" -r scripts benjah1@192.168.0.50:~/Documents
+    - scp -o "StrictHostKeyChecking=no" -r scripts ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:~/Documents
     - |
-      cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt benjah1@192.168.0.50
+      cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}
       ls &&
       cd Documents &&
       if [ ! -d dotfiles ]; then git clone https://github.com/benjah1/dotfiles.git; fi &&
@@ -20,17 +19,15 @@
 
 02_kind_up:
   image: kroniak/ssh-client:3.11 
-  variables:
-    REMOTE_HOST: 192.168.51.103
   script:
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
     - mkdir k8s-cluster/key
     - cp $K8S_CA_KEY k8s-cluster/key/ca.key
     - cp $K8S_CA_CRT k8s-cluster/key/ca.crt
-    - scp -o "StrictHostKeyChecking=no" -r k8s-cluster vagrant@${REMOTE_HOST}:~/Documents
+    - scp -o "StrictHostKeyChecking=no" -r k8s-cluster ${REMOTE_VM_USER}@${REMOTE_VM_HOST}:~/Documents
     - |
-      cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt vagrant@${REMOTE_HOST}
+      cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt ${REMOTE_VM_USER}@${REMOTE_VM_HOST}
       ls &&
       cd ~/Documents/k8s-cluster &&
       mkdir -p /home/vagrant/kind-data/pki &&
@@ -41,3 +38,23 @@
       exit
       EOL
   when: manual
+
+03_terraform_monitoring:
+  image: devops:test
+  script: 
+    - kubectl config set-credentials ben --client-certificate=${K8S_BEN_CRT} --client-key=${K8S_BEN_KEY}
+    - kubectl config set-cluster vm --server=https://${REMOTE_VM_HOST}:6443 --insecure-skip-tls-verify=true
+    - kubectl config set-context k8s --cluster=vm --user=ben
+    - kubectl config use-context k8s
+    - kubectl get node
+    - cd ./tfworkspace/monitoring
+    - cp ../terraform-provider-kubernetes .
+    - cat <<EOL | > backend.tf
+      terraform {
+        backend "kubernetes" {
+          secret_suffix = "monitoring"
+        }
+      }
+      EOL
+    - terraform init
+    - terraform apply
