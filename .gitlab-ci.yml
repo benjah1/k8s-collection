@@ -40,7 +40,7 @@
   when: manual
 
 03_terraform_monitoring:
-  image: devops:test
+  image: ${CI_REGISTRY}/devops:latest
   script: 
     - kubectl config set-credentials ben --client-certificate=${K8S_BEN_CRT} --client-key=${K8S_BEN_KEY}
     - kubectl config set-cluster vm --server=https://${REMOTE_VM_HOST}:6443 --insecure-skip-tls-verify=true
@@ -58,3 +58,19 @@
       EOL
     - terraform init
     - terraform apply
+  when: manual
+
+91_devops_image:
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: devops:latest
+  script:
+    - cd ./gitlab/dockerfiles
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f devops.dockerfile .
+    - docker push $IMAGE_TAG
+  when: manual
+
+
