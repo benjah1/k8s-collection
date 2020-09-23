@@ -39,8 +39,8 @@
       EOL
   when: manual
 
-03_terraform_monitoring:
-  image: ${CI_REGISTRY}/devops:latest
+11_terraform_monitoring:
+  image: ${CI_REGISTRY}/${CI_PROJECT_PATH}/devops:latest
   script: 
     - kubectl config set-credentials ben --client-certificate=${K8S_BEN_CRT} --client-key=${K8S_BEN_KEY}
     - kubectl config set-cluster vm --server=https://${REMOTE_VM_HOST}:6443 --insecure-skip-tls-verify=true
