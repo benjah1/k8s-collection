@@ -2,8 +2,8 @@ FROM alpine:3.12.0
 
 RUN apk add curl
 
-RUN curl -sLO https://releases.hashicorp.com/terraform/0.13.3/terraform_0.13.3_linux_amd64.zip && \
-    unzip terraform_0.13.3_linux_amd64.zip && \
+RUN curl -sLO https://releases.hashicorp.com/terraform/0.12.29/terraform_0.12.29_linux_amd64.zip && \
+    unzip terraform_0.12.29_linux_amd64.zip && \
 	  chmod +x ./terraform && \
 		mv ./terraform /usr/local/bin/terraform
 
