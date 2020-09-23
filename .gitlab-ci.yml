@@ -51,7 +51,7 @@
     - cp ../terraform-provider-kubernetes .
     - ls -al
     - |
-      cat <<EOL | > backend.tf
+      cat <<EOL | tee backend.tf
       terraform {
         backend "kubernetes" {
           secret_suffix = "monitoring"
