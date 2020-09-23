@@ -11,13 +11,15 @@ services:
       - '/opt/gitlab/gitlab-data:/var/opt/gitlab'
     ports:
       - '2223:22'
-      - '8080:80'
+      - '8080:38080'
       - '443:443'
-      - '4567:4567'
+      - '8081:4567'
     environment:
       GITLAB_OMNIBUS_CONFIG: |
+        external_url "http://192.168.0.76:38080"
+
         gitlab_rails['gitlab_shell_ssh_port'] = 2223
-        registry_external_url 'http://192.168.0.50:4567'
+        registry_external_url 'http://192.168.0.76:38081'
 
         gitlab_rails['registry_enabled'] = true
         gitlab_rails['registry_host'] = "localhost"
