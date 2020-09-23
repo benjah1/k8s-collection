@@ -44,13 +44,14 @@
   script: 
     - kubectl config set-credentials ben --client-certificate=${K8S_BEN_CRT} --client-key=${K8S_BEN_KEY}
     - kubectl config set-cluster vm --server=https://${REMOTE_VM_HOST}:6443 --insecure-skip-tls-verify=true
-    - kubectl config set-context k8s --cluster=vm --user=ben
-    - kubectl config use-context k8s
+    - kubectl config set-context kind-kind --cluster=vm --user=ben
+    - kubectl config use-context kind-kind
     - kubectl get node
     - cd ./tfworkspace/monitoring
     - cp ../terraform-provider-kubernetes .
     - ls -al
-    - cat <<EOL | tee backend.tf
+    - |
+      cat <<EOL | > backend.tf
       terraform {
         backend "kubernetes" {
           secret_suffix = "monitoring"
@@ -58,7 +59,7 @@
       }
       EOL
     - terraform init
-    - terraform apply
+    - terraform apply -auto-approve 
   when: manual
 
 91_devops_image:
