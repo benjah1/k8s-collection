@@ -49,7 +49,8 @@
     - kubectl get node
     - cd ./tfworkspace/monitoring
     - cp ../terraform-provider-kubernetes .
-    - cat <<EOL | > backend.tf
+    - ls -al
+    - cat <<EOL | tee backend.tf
       terraform {
         backend "kubernetes" {
           secret_suffix = "monitoring"
