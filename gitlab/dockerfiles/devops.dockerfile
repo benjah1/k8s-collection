@@ -1,4 +1,4 @@
-FROM alpine:3.12.0
+FROM debian:10.5
 
 RUN apk add curl
 
