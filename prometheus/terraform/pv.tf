@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume" "prometheus" {
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/prometheus"
+        path = "/opt/kind-data"
         type = "Directory"
       }
     }

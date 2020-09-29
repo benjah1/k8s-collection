@@ -18,7 +18,7 @@ resource "kubernetes_persistent_volume" "pv_grafana" {
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/grafana"
+        path = "/opt/kind-data"
         type = "Directory"
       }
     }

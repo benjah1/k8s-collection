@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume" "es_master" {
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/es-master"
+        path = "/opt/kind-data"
         type = "Directory"
       }
     }

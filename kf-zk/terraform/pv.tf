@@ -19,7 +19,7 @@ resource "kubernetes_persistent_volume" "zk" {
 
     persistent_volume_source {
       host_path {
-        path = "/opt/kind-data/zk"
+        path = "/opt/kind-data"
         type = "Directory"
       }
     }
