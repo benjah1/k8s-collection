@@ -5,4 +5,4 @@ docker run \
 	-v /home/vagrant/Documents/k8s-collection:/app \
 	--entrypoint tail \
 	--net host \
-	hashicorp/terraform:0.12.28 -f /dev/null
+	hashicorp/terraform:0.13.3 -f /dev/null
