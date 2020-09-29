@@ -1,6 +1,6 @@
 FROM debian:10.5
 
-RUN apk add curl
+RUN apt-get update && apt-get install -y curl unzip
 
 RUN curl -sLO https://releases.hashicorp.com/terraform/0.13.3/terraform_0.13.3_linux_amd64.zip && \
     unzip terraform_0.13.3_linux_amd64.zip && \
