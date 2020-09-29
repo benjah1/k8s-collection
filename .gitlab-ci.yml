@@ -4,7 +4,7 @@
     - eval $(ssh-agent -s)
     - cat ${PRI_KEY} | ssh-add -
     - export PUB_KEY_VALUE=$(cat ${PUB_KEY})
-    - scp -o "StrictHostKeyChecking=no" -r scripts ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:~/Documents
+    - scp -o "StrictHostKeyChecking=no" -r gitlab/scripts ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}:~/Documents
     - |
       cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt ${REMOTE_SERVER_USER}@${REMOTE_SERVER_HOST}
       ls &&
@@ -64,7 +64,33 @@
     - terraform apply -auto-approve 
   when: manual
 
-91_devops_image:
+91_vagrant_image:
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: ${CI_REGISTRY}/${CI_PROJECT_PATH}/vagrant:latest
+  script:
+    - cd ./gitlab/dockerfiles
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f vagrant.dockerfile .
+    - docker push $IMAGE_TAG
+  when: manual
+
+92_kind_image:
+  image: docker:19.03.12
+  services:
+    - docker:19.03.12-dind
+  variables:
+    IMAGE_TAG: ${CI_REGISTRY}/${CI_PROJECT_PATH}/kind-node:latest
+  script:
+    - cd ./gitlab/dockerfiles
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $IMAGE_TAG -f kind-node.dockerfile .
+    - docker push $IMAGE_TAG
+  when: manual
+
+93_devops_image:
   image: docker:19.03.12
   services:
     - docker:19.03.12-dind
@@ -76,5 +102,4 @@
     - docker build -t $IMAGE_TAG -f devops.dockerfile .
     - docker push $IMAGE_TAG
   when: manual
-
 

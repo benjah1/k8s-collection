@@ -5,7 +5,7 @@ networking:
   podSubnet: "10.244.0.0/16"
 nodes:
 - role: control-plane
-  image: kind-node:v1
+  image: 192.168.0.76:38081/root/k8s-collection/kind-node:latest
   extraMounts:
   - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
@@ -17,17 +17,17 @@ nodes:
     listenAddress: "0.0.0.0"
     protocol: TCP
 - role: worker
-  image: kind-node:v1
+  image: 192.168.0.76:38081/root/k8s-collection/kind-node:latest
   extraMounts:
   - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
 - role: worker
-  image: kind-node:v1
+  image: 192.168.0.76:38081/root/k8s-collection/kind-node:latest
   extraMounts:
   - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
 - role: worker
-  image: kind-node:v1
+  image: 192.168.0.76:38081/root/k8s-collection/kind-node:latest
   extraMounts:
   - hostPath: /home/vagrant/kind-data
     containerPath: /opt/kind-data
