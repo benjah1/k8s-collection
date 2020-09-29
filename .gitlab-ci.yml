@@ -48,9 +48,9 @@
     - kubectl config use-context kind-kind
     - kubectl get node
     - cd ./tfworkspace/monitoring
-    - mkdir -p .terraform/plugins/example.com/myorg/kubernetes/0.1/linux_amd64
-    - cp ../terraform-provider-kubernetes .terraform/plugins/example.com/myorg/kubernetes/0.1/linux_amd64
-    - chmod a+x .terraform/plugins/example.com/myorg/kubernetes/0.1/linux_amd64/terraform-provider-kubernetes
+    - mkdir -p .terraform/plugins/registry.terraform.io/hashicorp/kubernetes/2/linux_amd64/
+    - cp ../terraform-provider-kubernetes .terraform/plugins/registry.terraform.io/hashicorp/kubernetes/2/linux_amd64
+    - chmod a+x .terraform/plugins/registry.terraform.io/hashicorp/kubernetes/2/linux_amd64/terraform-provider-kubernetes
     - ls -al
     - |
       cat <<EOL | tee backend.tf
