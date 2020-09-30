@@ -6,6 +6,7 @@ inspire by https://gitlab.com/gitlab-org/gitlab/-/issues/23911#note_215199418
 ## CI/CD jobs
 
 | Name 										| Description 			|
+|---|---|
 | 91_vagrant_image 				| create image for create VM |
 | 92_kind_image						| create image of kind node |
 | 93_devops_image					| create image for create k8s and exec terraform | 
@@ -35,6 +36,7 @@ Also, configure the CI/CD Variables in the k8s-collection repo. see the Variable
 ## Variables
 
 | Type | Key         				| Description |
+|---|---|---|
 | FILE | K8S_BEN_CRT 				| Cert for k8s user signup with private key |
 | FILE | K8S_BEN_KEY 				| Same as private key |
 | FILE | K8S_CA_KEY 				| K8s CA for creating k8s |
