@@ -10,7 +10,11 @@ fi
 
 echo ""
 echo "Create cluster"
-rm -rf /home/vagrant/kind-data/pki/
+sudo rm -rf /home/vagrant/kind-data/pki/
+mkdir -p /home/vagrant/kind-data/pki
+cp key/ca.key /home/vagrant/kind-data/pki/ca.key
+cp key/ca.crt /home/vagrant/kind-data/pki/ca.crt
+
 kind create cluster --config ./kind.yaml
 
 echo ""

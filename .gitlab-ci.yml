@@ -30,9 +30,6 @@
       cat <<EOL | ssh -o "StrictHostKeyChecking=no" -tt ${REMOTE_VM_USER}@${REMOTE_VM_HOST}
       ls &&
       cd ~/Documents/k8s-cluster &&
-      mkdir -p /home/vagrant/kind-data/pki &&
-      if [ ! -f /home/vagrant/kind-data/pki/ca.key ]; then cp key/ca.key /home/vagrant/kind-data/pki/ca.key; fi &&
-      if [ ! -f /home/vagrant/kind-data/pki/ca.crt ]; then cp key/ca.crt /home/vagrant/kind-data/pki/ca.crt; fi &&
       bash ./cluster_up.sh &&
       docker ps &&
       exit
