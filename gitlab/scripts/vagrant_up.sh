@@ -16,7 +16,7 @@ then
 			-v $(pwd)/dotfiles:/home/benjah1/Documents/dotfiles \
 			-w /home/benjah1/Documents/dotfiles/1804-ram/ \
 			--net host \
-			vagrant:test \
+			192.168.0.76:38081/root/k8s-collection/vagrant:latest \
 			tail -f /dev/null
 	else
 		echo "docker vagrant is not running. Start now..."
