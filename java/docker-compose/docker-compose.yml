@@ -28,7 +28,7 @@ services:
   schema:
     image: confluentinc/cp-schema-registry:5.5.1
     ports:
-      - 8081:8081
+      - 8083:8081
     environment:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: kafka:9092
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
@@ -75,7 +75,7 @@ services:
   java:
     image: openjdk:11
     ports:
-      - 8080:8080
+      - 8082:8082
     volumes:
       - ../:/app
     command: tail -f /dev/null

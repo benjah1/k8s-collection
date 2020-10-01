@@ -10,9 +10,9 @@
 	</parent>
 
 	<groupId>com.benjah</groupId>
-	<artifactId>ms-a</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>ms-1</name>
+	<artifactId>ms</artifactId>
+	<version>0.0.1</version>
+	<name>ms</name>
 	<description>For k8s Lab</description>
 
 	<properties>
@@ -68,6 +68,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>ms</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
