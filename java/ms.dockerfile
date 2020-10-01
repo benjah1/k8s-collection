@@ -1,7 +1,7 @@
 FROM openjdk:11
 
 ADD ./ms /app
-RUN cd /app && ls -al && sudo ./mvnw clean package && ls ./target
+RUN cd /app && bash ./mvnw clean package && ls ./target
 
 
 FROM openjdk:11
