@@ -1,7 +1,10 @@
 FROM openjdk:11
 
 ADD ./ms /app
-RUN cd /app && bash ./mvnw clean package && ls ./target
+RUN cd /app && \
+    chmod a+x .mvn/wrapper/maven-wrapper.jar && \
+    bash ./mvnw clean package && \
+    ls ./target
 
 
 FROM openjdk:11
