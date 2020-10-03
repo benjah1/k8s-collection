@@ -1,23 +1,26 @@
 spring:
   application:
-    name: ms-a
+    name: ms
 
   cloud:
     vault:
-      host: vault
-      token: s.NHWZYD5YtdVQ5uwOCcEWOAoP
+      host: ${VAULT_ADDR}
       scheme: http
-      authentication: TOKEN
+      authentication: APPROLE
+      app-role:
+        app-role-path: approle
+        role-id: ${VAULT_ROLE_ID}
+        secret-id: ${VAULT_SECRET_ID}
       kv:
         enabled: true
       mysql:
         enabled: true
         backend: mysql
-        role: ms-a
+        role: ${MS_PROFILE}
 
     consul:
-      host: consul
+      host: ${CONSUL_ADDR}
       port: 8500
-      token: 8deab17d-0098-cda6-80da-898315392eb6
+      token: ${CONSUL_TOKEN}
       config:
         enabled: true
