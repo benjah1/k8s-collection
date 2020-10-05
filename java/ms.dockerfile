@@ -10,4 +10,4 @@ RUN cd /app && \
 FROM openjdk:11
 
 COPY --from=0 /app/target/ms.jar /opt/ms.jar
-CMD ["java", "$JAVA_OPTS", "-jar", "/opt/ms.jar"]
+CMD java $JAVA_OPTS -jar /opt/ms.jar
