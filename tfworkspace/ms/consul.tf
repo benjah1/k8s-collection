@@ -13,7 +13,7 @@ resource "consul_key_prefix" "ms" {
     "logging/level/org/srpingframework/kafka" = "INFO"
     "logging/level/org/apache/kafka"          = "INFO"
 
-    "spring/kafka/bootstrap-servers"          = "kafka:9092"
+    "spring/kafka/bootstrap-servers"          = "192.168.51.103:9092"
 
     "feature/toggle/restapi"                  = "true"
     "feature/toggle/consumer"                 = "false"

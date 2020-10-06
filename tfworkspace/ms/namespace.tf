@@ -23,19 +23,57 @@ resource "kubernetes_network_policy" "monitoring_ingress_default_deny" {
   }
 }
 
+locals {
+  dockercfg = {
+    auths = {
+      "192.168.0.76:38081" = {
+        username = "root"
+        password = "123456789"
+        auth = base64encode("root:123456789")
+      }
+    }
+  }
+}
+
+resource "kubernetes_secret" "gitlab_reg" {
+  metadata {
+    name = "gitlab-reg"
+    namespace = kubernetes_namespace.ms.metadata.0.name
+  }
+
+  data = {
+    ".dockerconfigjson" = jsonencode(local.dockercfg)
+  }
+
+  type = "kubernetes.io/dockerconfigjson"
+}
+
+data "consul_acl_token_secret_id" "ms-type-a" {
+  accessor_id = consul_acl_token.ms-type-a.id
+}
+data "consul_acl_token_secret_id" "ms-type-b" {
+  accessor_id = consul_acl_token.ms-type-b.id
+}
+
+
 module "ms-type-a" {
   source = "../../java/terraform-ms"
   namespace = kubernetes_namespace.ms.metadata.0.name
   name = "ms-type-a"
   profile = "type-a"
   replicas = 1
+  port = 8080
   image = "192.168.0.76:38081/root/k8s-collection/ms:latest"
 
   consul_addr = var.consul_addr
-  consul_token = consul_acl_token.ms-type-a.id
+  consul_token = data.consul_acl_token_secret_id.ms-type-a.secret_id
   vault_addr = var.vault_addr
   vault_role_id = vault_approle_auth_backend_role.ms-type-a.role_id
-  vault_secret_id = ""
+  vault_secret_id = vault_approle_auth_backend_role_secret_id.ms-type-a.secret_id
+
+  depends_on = [
+    kubernetes_secret.gitlab_reg
+  ]
 }
 
 module "ms-type-b" {
@@ -44,11 +82,16 @@ module "ms-type-b" {
   name = "ms-type-b"
   profile = "type-b"
   replicas = 1
+  port = 8081
   image = "192.168.0.76:38081/root/k8s-collection/ms:latest"
 
   consul_addr = var.consul_addr
-  consul_token = consul_acl_token.ms-type-b.id
+  consul_token = data.consul_acl_token_secret_id.ms-type-b.secret_id
   vault_addr = var.vault_addr
   vault_role_id = vault_approle_auth_backend_role.ms-type-b.role_id
-  vault_secret_id = ""
+  vault_secret_id = vault_approle_auth_backend_role_secret_id.ms-type-b.secret_id
+
+  depends_on = [
+    kubernetes_secret.gitlab_reg
+  ]
 }

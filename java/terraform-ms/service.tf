@@ -8,8 +8,8 @@ resource "kubernetes_service" "ms" {
     port {
       name        = "http"
       protocol    = "TCP"
-      port        = 8080
-      target_port = "8080"
+      port        = var.port
+      target_port = var.port
     }
 
     selector = {

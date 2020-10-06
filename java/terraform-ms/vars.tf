@@ -39,3 +39,8 @@ variable "vault_role_id" {
 variable "vault_secret_id" {
   type = string
 }
+
+variable "port" {
+  type = number
+}
+

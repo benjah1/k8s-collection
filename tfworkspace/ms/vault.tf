@@ -8,8 +8,8 @@ resource "vault_mount" "secret" {
   type        = "kv"
 }
 
-resource "vault_generic_secret" "ms-a" {
-  path = "secret/ms-a"
+resource "vault_generic_secret" "ms" {
+  path = "secret/ms"
 
   data_json = <<EOT
 {

@@ -23,13 +23,17 @@ resource "kubernetes_deployment" "ms" {
       }
 
       spec {
+        image_pull_secrets {
+          name = "gitlab-reg"
+        }
+
         container {
           name  = var.name
           image = var.image
 
           port {
             name           = "http"
-            container_port = 8080
+            container_port = var.port
           }
 
           resources {
@@ -76,13 +80,13 @@ resource "kubernetes_deployment" "ms" {
 
           env {
             name  = "JAVA_OPTS"
-            value = "-Dspring.profiles.active=${var.profile}"
+            value = "-Dspring.profiles.active=${var.profile} -Dspring.cloud.vault.mysql.role=ms -Dserver.port=${var.port}"
           }
 
           readiness_probe {
             http_get {
               path = "/ping"
-              port = "8080"
+              port = var.port
             }
 
             initial_delay_seconds = 5

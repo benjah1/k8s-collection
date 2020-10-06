@@ -24,7 +24,6 @@ resource "consul_acl_role" "ms-type-a" {
   policies = [
     consul_acl_policy.policy-ms.id,
     consul_acl_policy.policy-ms-type-a.id,
-    consul_acl_policy.policy-ms-type-b.id
   ]
 }
 
@@ -85,6 +84,11 @@ resource "vault_approle_auth_backend_role" "ms-type-a" {
   ]
 }
 
+resource "vault_approle_auth_backend_role_secret_id" "ms-type-a" {
+  backend   = vault_auth_backend.approle.path
+  role_name = vault_approle_auth_backend_role.ms-type-a.role_name
+}
+
 resource "vault_approle_auth_backend_role" "ms-type-b" {
   backend        = vault_auth_backend.approle.path
   role_name      = "ms-type-b"
@@ -93,6 +97,11 @@ resource "vault_approle_auth_backend_role" "ms-type-b" {
     vault_policy.policy-ms-type-b.name,
     vault_policy.policy-ms-mysql.name
   ]
+}
+
+resource "vault_approle_auth_backend_role_secret_id" "ms-type-b" {
+  backend   = vault_auth_backend.approle.path
+  role_name = vault_approle_auth_backend_role.ms-type-b.role_name
 }
 
 /* *****
@@ -122,7 +131,6 @@ resource "vault_database_secret_backend_role" "role" {
   max_ttl             = 60
   creation_statements = [
     "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';",
-    "GRANT SELECT ON messages.* TO '{{name}}'@'%';",
-    "GRANT INSERT ON messages.* TO '{{name}}'@'%';"
+    "GRANT SELECT,INSERT,CREATE ON messages.* TO '{{name}}'@'%';"
   ]
 }
