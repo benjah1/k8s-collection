@@ -8,5 +8,6 @@ listener "tcp" {
 storage "consul" {
 	path = "vault/"
 	address = "consul.${namespace}:8500"
+	token = "${token}"
 }
 service_registration "kubernetes" {}

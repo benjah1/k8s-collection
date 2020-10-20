@@ -5,7 +5,7 @@ resource "kubernetes_config_map" "vault" {
   }
 
   data = {
-    "config.hcl" = "${templatefile("${path.module}/configs/config.tmpl", {namespace = var.namespace})}"
+    "config.hcl" = "${templatefile("${path.module}/configs/config.tmpl", {namespace = var.namespace, token = var.consul_token})}"
   }
 }
 

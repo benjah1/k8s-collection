@@ -7,18 +7,17 @@ resource "consul_key_prefix" "ms" {
   path_prefix = "config/ms/"
 
   subkeys = {
-    "server/port"                             = "8080"
-
     "logging/level/root"                      = "INFO"
     "logging/level/org/srpingframework/kafka" = "INFO"
     "logging/level/org/apache/kafka"          = "INFO"
 
-    "spring/kafka/bootstrap-servers"          = "192.168.51.103:9092"
+    "spring/kafka/bootstrap-servers"          = "${var.kafka_bootstrap_server}"
 
     "feature/toggle/restapi"                  = "true"
     "feature/toggle/consumer"                 = "false"
 
-    "spring/datasource/url" = "jdbc:mysql://192.168.51.103:3306/messages?useSSL=false&useUnicode=true&characterEncoding=UTF-8"
+    "spring/datasource/url" = "jdbc:mysql://${var.mysql_addr}/messages?useSSL=false&useUnicode=true&characterEncoding=UTF-8"
+    "spring/datasource/initialization-mode" = "always"
   }
 }
 

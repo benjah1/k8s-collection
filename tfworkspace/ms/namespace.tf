@@ -26,10 +26,10 @@ resource "kubernetes_network_policy" "monitoring_ingress_default_deny" {
 locals {
   dockercfg = {
     auths = {
-      "192.168.0.76:38081" = {
-        username = "root"
-        password = "123456789"
-        auth = base64encode("root:123456789")
+      "${var.gitlab_reg_host}" = {
+        username = "${var.gitlab_reg_user}"
+        password = "${var.gitlab_reg_pass}"
+        auth = base64encode("${var.gitlab_reg_user}:${var.gitlab_reg_pass}")
       }
     }
   }
@@ -63,7 +63,7 @@ module "ms-type-a" {
   profile = "type-a"
   replicas = 1
   port = 8080
-  image = "192.168.0.76:38081/root/k8s-collection/ms:latest"
+  image = "${var.gitlab_reg_host}/root/k8s-collection/ms:latest"
 
   consul_addr = var.consul_addr
   consul_token = data.consul_acl_token_secret_id.ms-type-a.secret_id
@@ -83,7 +83,7 @@ module "ms-type-b" {
   profile = "type-b"
   replicas = 1
   port = 8081
-  image = "192.168.0.76:38081/root/k8s-collection/ms:latest"
+  image = "${var.gitlab_reg_host}/root/k8s-collection/ms:latest"
 
   consul_addr = var.consul_addr
   consul_token = data.consul_acl_token_secret_id.ms-type-b.secret_id

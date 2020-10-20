@@ -7,3 +7,7 @@ variable "replicas" {
   type = number
   default = 3
 }
+
+variable "consul_token" {
+  type = string
+}

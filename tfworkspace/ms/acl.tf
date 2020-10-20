@@ -119,7 +119,7 @@ resource "vault_database_secret_backend_connection" "mysql-ms" {
   allowed_roles = ["ms"]
 
   mysql {
-    connection_url  = "root:12345@tcp(192.168.51.103:3306)/"
+    connection_url  = "${var.mysql_user}:${var.mysql_pass}@tcp(${var.mysql_addr})/"
   }
 }
 
@@ -127,8 +127,8 @@ resource "vault_database_secret_backend_role" "role" {
   backend             = vault_mount.mysql.path
   name                = "ms"
   db_name             = vault_database_secret_backend_connection.mysql-ms.name
-  default_ttl         = 20
-  max_ttl             = 60
+  default_ttl         = 30
+  max_ttl             = 600
   creation_statements = [
     "CREATE USER '{{name}}'@'%' IDENTIFIED BY '{{password}}';",
     "GRANT SELECT,INSERT,CREATE ON messages.* TO '{{name}}'@'%';"

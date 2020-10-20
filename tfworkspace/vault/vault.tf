@@ -27,4 +27,5 @@ module "consul" {
 module "vault" {
   source = "../../vault/terraform"
   namespace = kubernetes_namespace.vault.metadata.0.name
+  consul_token = module.consul.master_token
 }
