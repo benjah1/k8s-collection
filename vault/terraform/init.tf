@@ -4,6 +4,6 @@ resource "null_resource" "vault_init" {
   }
 
   provisioner "local-exec" {
-    command = "python3 ${path.module}/script/vault_init.py"
+    command = "python3 -m pip install -r ${path.module}/script/requirements.txt && python3 ${path.module}/script/vault_init.py '${var.consul_token}'"
   }
 }

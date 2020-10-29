@@ -1,4 +1,9 @@
 locals {
+  triggers = {
+    cluster_pv_id = kubernetes_persistent_volume.consul.id
+  }
+
+
   token = uuid()
 }
 
