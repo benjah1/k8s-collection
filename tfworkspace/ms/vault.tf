@@ -1,6 +1,7 @@
 provider "vault" {
   address = "http://${var.vault_addr}:8200"
-  token = var.vault_token
+  token     = data.consul_key_prefix.secret.var.vault_token
+  # token     = var.vault_token
 }
 
 resource "vault_mount" "secret" {

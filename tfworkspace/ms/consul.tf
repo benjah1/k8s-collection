@@ -1,6 +1,7 @@
 provider "consul" {
   address   = "${var.consul_addr}:8500"
-  token     = var.consul_token
+  token     = data.consul_key_prefix.secret.var.consul_token
+  # token     = var.consul_token
 }
 
 resource "consul_key_prefix" "ms" {
@@ -20,5 +21,3 @@ resource "consul_key_prefix" "ms" {
     "spring/datasource/initialization-mode" = "always"
   }
 }
-
-

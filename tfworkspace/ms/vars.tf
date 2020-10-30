@@ -10,12 +10,12 @@ variable "vault_addr" {
 
 variable "consul_token" {
   type = string
-  default = "7b52b70e-3cb3-2e0d-baa4-4b58659336d6"
+  default = "8b903dd8-337d-40d6-bb43-c766fcef4841"
 }
 
 variable "vault_token" {
   type = string
-  default = "s.wKwep8VyxvEcFvVAoC6vvoLY"
+  default = "s.Ajr9M9blalub8g8I585hBCRv"
 }
 
 variable "mysql_addr" {
