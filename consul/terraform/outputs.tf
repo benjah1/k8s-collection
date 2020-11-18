@@ -1,3 +1,3 @@
 output "master_token" {
-  value = local.token
+  value = random_uuid.token.result
 }

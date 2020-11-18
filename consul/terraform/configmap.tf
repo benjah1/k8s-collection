@@ -1,11 +1,4 @@
-locals {
-  triggers = {
-    cluster_pv_id = kubernetes_persistent_volume.consul.id
-  }
-
-
-  token = uuid()
-}
+resource "random_uuid" "token" { }
 
 resource "kubernetes_config_map" "consul" {
   metadata {
@@ -14,6 +7,6 @@ resource "kubernetes_config_map" "consul" {
   }
 
   data = {
-    "server.json" = "${templatefile("${path.module}/configs/server.tmpl", {namespace = var.namespace, token = local.token})}"
+    "server.json" = "${templatefile("${path.module}/configs/server.tmpl", {namespace = var.namespace, token = random_uuid.token.result})}"
   }
 }
