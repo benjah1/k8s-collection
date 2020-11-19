@@ -42,7 +42,7 @@
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - |
-      echo ${IMAGE_REPO} | xargs -I {} \
+      cat ${IMAGE_REPO} | xargs -I {} \
       sh -c "\
       echo pull {} &&\
       docker pull {} &&\
