@@ -42,11 +42,12 @@
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - |
       echo ${IMAGE_REPO} | xargs -I {} \
-      bash -c "\
+      sh -c "\
       docker pull {} &&\
       docker tag {} ${CI_REGISTRY}/${CI_PROJECT_PATH}/{} &&\
       docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}{} \
       "
+  when: manual
 
 11_terraform_monitoring:
   image: ${CI_REGISTRY}/${CI_PROJECT_PATH}/devops:latest
