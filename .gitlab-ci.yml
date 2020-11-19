@@ -47,7 +47,7 @@
       echo pull {} &&\
       docker pull {} &&\
       docker tag {} ${CI_REGISTRY}/${CI_PROJECT_PATH}/{} &&\
-      docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}{} \
+      docker push ${CI_REGISTRY}/${CI_PROJECT_PATH}/{} \
       "
   when: manual
 
